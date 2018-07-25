@@ -7,6 +7,6 @@
     <!--Tools text used for development purposes only-->
     <string name="tools_title">Ice cave in Iceland during sunset</string>
     <string name="tools_subreddit">r/pics</string>
-    <string name="tools_time_and_author">Posted by u/IcyDreams 3 hours ago</string>
+    <string name="tools_time_and_author">by u/IcyDreams 3 hours ago</string>
     <string name="tools_upvote_count">1265</string>
 </resources>
