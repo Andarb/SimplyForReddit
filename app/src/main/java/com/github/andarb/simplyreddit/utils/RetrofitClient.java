@@ -27,7 +27,7 @@ public final class RetrofitClient {
     private static final String RETURN_FORMAT = ".json";
     private static final String NEW_POSTS_PATH = "all/new/" + RETURN_FORMAT;
     private static final String HOT_POSTS_PATH = "all/hot/" + RETURN_FORMAT;
-
+    private static final String TOP_POSTS_PATH = "all/top/" + RETURN_FORMAT;
 
     /* Retrofit interface for retrieving posts */
     private interface MovieApi {
@@ -36,6 +36,9 @@ public final class RetrofitClient {
 
         @GET(HOT_POSTS_PATH)
         Call<RedditPosts> getHotPosts();
+
+        @GET(TOP_POSTS_PATH)
+        Call<RedditPosts> getTopPosts();
     }
 
     /* Set up retrofit and its service */
@@ -64,6 +67,13 @@ public final class RetrofitClient {
         MovieApi apiService = setupRetrofit();
 
         return apiService.getHotPosts();
+    }
+
+    /* Retrieve top posts from all subreddits */
+    public static Call<RedditPosts> getTop() {
+        MovieApi apiService = setupRetrofit();
+
+        return apiService.getTopPosts();
     }
 
     /* Unwrap JSON and deserialize from top level `data` property down.
