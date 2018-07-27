@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         // Page to display
         @Override
         public Fragment getItem(int position) {
-            return PostsFragment.newInstance(position);
+            return ViewPagerFragment.newInstance(position);
         }
 
         // Return page title

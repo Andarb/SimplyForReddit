@@ -22,12 +22,13 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- *
- *
+ * A new instance of this fragment is used for each page of the ViewPager.
+ * A list of most popular, hot or new posts from all subreddits is downloaded and displayed here.
  */
-public class PostsFragment extends Fragment {
-    private static final String ARG_PAGE = "page_number";
-    private static final String TAG = PostsFragment.class.getSimpleName();
+public class ViewPagerFragment extends Fragment {
+
+    private static final String TAG = ViewPagerFragment.class.getSimpleName();
+    private static final String ARG_PAGE = "com.github.andarb.simplyreddit.arg.PAGE";
 
     private int mPage;
     private Unbinder mButterknifeUnbinder;
@@ -36,13 +37,13 @@ public class PostsFragment extends Fragment {
     RecyclerView mPostsRV;
 
     /* Required empty public constructor */
-    public PostsFragment() {
+    public ViewPagerFragment() {
 
     }
 
     /* Create a new instance of this fragment with a viewpager page number argument*/
-    public static PostsFragment newInstance(int page) {
-        PostsFragment fragment = new PostsFragment();
+    public static ViewPagerFragment newInstance(int page) {
+        ViewPagerFragment fragment = new ViewPagerFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_PAGE, page);
         fragment.setArguments(args);
@@ -52,7 +53,7 @@ public class PostsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.posts_fragment, container, false);
+        View view = inflater.inflate(R.layout.post_list, container, false);
         mButterknifeUnbinder = ButterKnife.bind(this, view);
 
         return view;

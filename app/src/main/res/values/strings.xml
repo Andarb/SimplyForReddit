@@ -10,6 +10,7 @@
     <string name="tools_time_and_author">by u/IcyDreams 3 hours ago</string>
     <string name="tools_upvote_count">1265</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Prefixes for subreddits and usernames -->
+    <string name="prefix_subreddit" translatable="false">r/%1$s</string>
+    <string name="prefix_user">by u/%1$s</string>
 </resources>
