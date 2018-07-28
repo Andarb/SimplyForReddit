@@ -54,7 +54,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     int position = getAdapterPosition();
 
                     Intent intent = new Intent(mContext, SubredditActivity.class);
-                    intent.putExtra(SubredditActivity.EXTRA_SUBREDDIT, mRedditPosts.getChildren()
+                    intent.putExtra(SubredditActivity.EXTRA_SUBREDDIT, mRedditPosts.getData().getChildren()
                             .get(position)
                             .getData()
                             .getSubreddit());
@@ -72,11 +72,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             int position = getAdapterPosition();
 
             Intent intent = new Intent(mContext, PostActivity.class);
-            intent.putExtra(SubredditActivity.EXTRA_SUBREDDIT, mRedditPosts.getChildren()
+            intent.putExtra(SubredditActivity.EXTRA_SUBREDDIT, mRedditPosts.getData().getChildren()
                     .get(position)
                     .getData()
                     .getSubreddit());
-            intent.putExtra(PostActivity.EXTRA_POST, mRedditPosts.getChildren()
+            intent.putExtra(PostActivity.EXTRA_POST, mRedditPosts.getData().getChildren()
                     .get(position)
                     .getData()
                     .getPermalink());
@@ -96,12 +96,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
-        String thumbnailUrl = mRedditPosts.getChildren().get(position).getData().getThumbnail();
-        String title = mRedditPosts.getChildren().get(position).getData().getTitle();
-        String subreddit = mRedditPosts.getChildren().get(position).getData().getSubreddit();
-        int score = mRedditPosts.getChildren().get(position).getData().getScore();
-        String author = mRedditPosts.getChildren().get(position).getData().getAuthor();
-        int time = mRedditPosts.getChildren().get(position).getData().getCreated();
+        String thumbnailUrl = mRedditPosts.getData().getChildren().get(position).getData().getThumbnail();
+        String title = mRedditPosts.getData().getChildren().get(position).getData().getTitle();
+        String subreddit = mRedditPosts.getData().getChildren().get(position).getData().getSubreddit();
+        int score = mRedditPosts.getData().getChildren().get(position).getData().getScore();
+        String author = mRedditPosts.getData().getChildren().get(position).getData().getAuthor();
+        int time = mRedditPosts.getData().getChildren().get(position).getData().getCreated();
 
         Picasso.get().load(thumbnailUrl).into(holder.mThumbnailIV);
         holder.mPostTitleTV.setText(title);
@@ -112,6 +112,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     @Override
     public int getItemCount() {
-        return mRedditPosts.getChildren().size();
+        return mRedditPosts.getData().getChildren().size();
     }
 }

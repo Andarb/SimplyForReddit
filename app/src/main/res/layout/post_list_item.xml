@@ -58,6 +58,6 @@
         app:layout_constraintBottom_toBottomOf="@+id/post_thumbnail_iv"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/post_thumbnail_iv"
-        tools:text="@string/tools_upvote_count" />
+        tools:text="@string/tools_score" />
 
 </android.support.constraint.ConstraintLayout>

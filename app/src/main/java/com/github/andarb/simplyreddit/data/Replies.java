@@ -1,7 +1,6 @@
 package com.github.andarb.simplyreddit.data;
 
-public class RedditPosts {
-
+public class Replies {
     private String kind;
 
     private Data data;
@@ -22,4 +21,3 @@ public class RedditPosts {
         return this.data;
     }
 }
-

@@ -1,5 +1,7 @@
 package com.github.andarb.simplyreddit.data;
 
+import java.util.List;
+
 public class Data {
     private String subreddit;
 
@@ -20,6 +22,16 @@ public class Data {
     private String url;
 
     private Preview preview;
+
+    private List<Children> children;
+
+    private String after;
+
+    private String before;
+
+    private String body;
+
+    private Replies replies;
 
     public void setSubreddit(String subreddit) {
         this.subreddit = subreddit;
@@ -99,5 +111,45 @@ public class Data {
 
     public Preview getPreview() {
         return this.preview;
+    }
+
+    public void setChildren(List<Children> children) {
+        this.children = children;
+    }
+
+    public List<Children> getChildren() {
+        return this.children;
+    }
+
+    public void setAfter(String after) {
+        this.after = after;
+    }
+
+    public String getAfter() {
+        return this.after;
+    }
+
+    public void setBefore(String before) {
+        this.before = before;
+    }
+
+    public String getBefore() {
+        return this.before;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public String getBody() {
+        return this.body;
+    }
+
+    public void setReplies(Replies replies) {
+        this.replies = replies;
+    }
+
+    public Replies getReplies() {
+        return this.replies;
     }
 }

@@ -6,24 +6,33 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.github.andarb.simplyreddit.R;
 import com.github.andarb.simplyreddit.data.RedditPosts;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentViewHolder> {
 
-    private RedditPosts mRedditPosts;
+    private RedditPosts mComments;
     private Context mContext;
 
-    public CommentAdapter(Context context, RedditPosts redditPosts) {
+    public CommentAdapter(Context context, RedditPosts comments) {
         mContext = context;
-        mRedditPosts = redditPosts;
+        mComments = comments;
     }
 
     class CommentViewHolder extends RecyclerView.ViewHolder {
-
+        @BindView(R.id.comment_body_tv)
+        TextView mBodyTV;
+        @BindView(R.id.comment_author_tv)
+        TextView mAuthorTV;
+        @BindView(R.id.comment_score_tv)
+        TextView mScoreTV;
+        @BindView(R.id.comment_time_tv)
+        TextView mTimeTv;
 
         public CommentViewHolder(View itemView) {
             super(itemView);
@@ -42,12 +51,20 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
 
     @Override
     public void onBindViewHolder(@NonNull CommentViewHolder holder, int position) {
+        String body = mComments.getData().getChildren().get(position).getData().getBody();
+        String author = mComments.getData().getChildren().get(position).getData().getAuthor();
+        int score = mComments.getData().getChildren().get(position).getData().getScore();
+        int time = mComments.getData().getChildren().get(position).getData().getCreated();
 
+        holder.mBodyTV.setText(body);
+        holder.mAuthorTV.setText(author);
+        holder.mScoreTV.setText(String.valueOf(score));
+        holder.mTimeTv.setText(String.valueOf(time));
     }
 
     @Override
     public int getItemCount() {
-        return mRedditPosts.getChildren().size();
+        return mComments.getData().getChildren().size();
     }
 }
 

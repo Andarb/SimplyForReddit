@@ -11,6 +11,8 @@ import com.github.andarb.simplyreddit.adapters.PostAdapter;
 import com.github.andarb.simplyreddit.data.RedditPosts;
 import com.github.andarb.simplyreddit.utils.RetrofitClient;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
@@ -50,22 +52,22 @@ public class SubredditActivity extends AppCompatActivity {
 
     /* Download and parse Reddit posts */
     private void retrievePosts() {
-        Call<RedditPosts> getCall;
+        Call<List<RedditPosts>> getCall;
         getCall = RetrofitClient.getSubreddit(mSubreddit);
 
-        getCall.enqueue(new Callback<RedditPosts>() {
+        getCall.enqueue(new Callback<List<RedditPosts>>() {
             @Override
-            public void onResponse(Call<RedditPosts> call,
-                                   Response<RedditPosts> response) {
+            public void onResponse(Call<List<RedditPosts>> call,
+                                   Response<List<RedditPosts>> response) {
                 if (response.isSuccessful()) {
-                    RedditPosts redditPosts = response.body();
+                    List<RedditPosts> redditPosts = response.body();
 
                     if (redditPosts == null) {
                         Log.w(TAG, "Failed deserializing JSON");
                         return;
                     }
 
-                    PostAdapter postAdapter = new PostAdapter(SubredditActivity.this, redditPosts);
+                    PostAdapter postAdapter = new PostAdapter(SubredditActivity.this, redditPosts.get(0));
                     mPostsRV.setLayoutManager(new LinearLayoutManager(SubredditActivity.this,
                             LinearLayoutManager.VERTICAL, false));
                     mPostsRV.setHasFixedSize(true);
@@ -76,7 +78,7 @@ public class SubredditActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<RedditPosts> call, Throwable t) {
+            public void onFailure(Call<List<RedditPosts>> call, Throwable t) {
                 Log.w(TAG, "Response failed");
             }
         });

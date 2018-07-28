@@ -1,16 +1,22 @@
 package com.github.andarb.simplyreddit.utils;
 
+import com.github.andarb.simplyreddit.data.Children;
+import com.github.andarb.simplyreddit.data.Data;
 import com.github.andarb.simplyreddit.data.RedditPosts;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -40,25 +46,26 @@ public final class RetrofitClient {
     /* Retrofit interface for retrieving posts */
     private interface RedditApi {
         @GET(NEW_POSTS_PATH)
-        Call<RedditPosts> getNewPosts();
+        Call<List<RedditPosts>> getNewPosts();
 
         @GET(HOT_POSTS_PATH)
-        Call<RedditPosts> getHotPosts();
+        Call<List<RedditPosts>> getHotPosts();
 
         @GET(TOP_POSTS_PATH)
-        Call<RedditPosts> getTopPosts();
+        Call<List<RedditPosts>> getTopPosts();
 
         @GET(SUBREDDIT_PATH_MASK)
-        Call<RedditPosts> getSubreddit(@Path(SUBREDDIT_PATH) String subreddit);
+        Call<List<RedditPosts>> getSubreddit(@Path(SUBREDDIT_PATH) String subreddit);
 
         @GET(POST_PATH_MASK)
-        Call<RedditPosts> getPost(@Path(value = POST_PATH, encoded = true) String post);
+        Call<List<RedditPosts>> getPost(@Path(value = POST_PATH, encoded = true) String post);
     }
 
     /* Set up retrofit and its service */
     private static RedditApi setupRetrofit() {
         Gson gson = new GsonBuilder()
-                .registerTypeAdapter(RedditPosts.class, new RedditPostDeserializer())
+                .registerTypeAdapter(new TypeToken<List<RedditPosts>>() {
+                }.getType(), new RedditPostDeserializer())
                 .create();
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -70,35 +77,35 @@ public final class RetrofitClient {
     }
 
     /* Retrieve latest posts from all subreddits */
-    public static Call<RedditPosts> getNew() {
+    public static Call<List<RedditPosts>> getNew() {
         RedditApi apiService = setupRetrofit();
 
         return apiService.getNewPosts();
     }
 
     /* Retrieve hottest posts from all subreddits */
-    public static Call<RedditPosts> getHot() {
+    public static Call<List<RedditPosts>> getHot() {
         RedditApi apiService = setupRetrofit();
 
         return apiService.getHotPosts();
     }
 
     /* Retrieve top posts from all subreddits */
-    public static Call<RedditPosts> getTop() {
+    public static Call<List<RedditPosts>> getTop() {
         RedditApi apiService = setupRetrofit();
 
         return apiService.getTopPosts();
     }
 
     /* Retrieve posts from the chosen subreddit */
-    public static Call<RedditPosts> getSubreddit(String subreddit) {
+    public static Call<List<RedditPosts>> getSubreddit(String subreddit) {
         RedditApi apiService = setupRetrofit();
 
         return apiService.getSubreddit(subreddit);
     }
 
     /* Retrieve a chosen post */
-    public static Call<RedditPosts> getPost(String post) {
+    public static Call<List<RedditPosts>> getPost(String post) {
         RedditApi apiService = setupRetrofit();
 
         return apiService.getPost(post);
@@ -106,34 +113,73 @@ public final class RetrofitClient {
 
     /* Unwrap JSON and deserialize from top level `data` property down.
      * This helps prevent a conflict with another, different property that has an identical name. */
-    private static class RedditPostDeserializer implements JsonDeserializer<RedditPosts> {
+    private static class RedditPostDeserializer implements JsonDeserializer<List<RedditPosts>> {
         @Override
-        public RedditPosts deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+        public List<RedditPosts> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
                 throws JsonParseException {
 
             RedditPosts posts = null;
-            JsonObject rootObject = null;
+            RedditPosts comments = new RedditPosts();
+            List<RedditPosts> postsAndComments = new ArrayList<>();
 
-            // A list of posts will be an object, while specific post details will be an array
+            // If root JSON is an object, it will contain a list of posts. Otherwise it's an array
+            // which will contain post details and a list of comments.
+            JsonObject postsRootObject;
             if (json.isJsonObject()) {
-                rootObject = json.getAsJsonObject();
+                postsRootObject = json.getAsJsonObject();
             } else {
-                rootObject = json.getAsJsonArray().get(0).getAsJsonObject();
-            }
+                // Get post details
+                postsRootObject = json.getAsJsonArray().get(0).getAsJsonObject();
+                // Get comments
+                JsonObject commentsRootObject = json.getAsJsonArray().get(1).getAsJsonObject();
 
-            String kind = rootObject.get("kind").getAsString();
+                // Move down through JSON nested properties
+                JsonObject commentsDataObject = commentsRootObject.get("data").getAsJsonObject();
+                JsonArray commentsChildrenArray = commentsDataObject.get("children").getAsJsonArray();
 
-            if (kind.equals("Listing")) { // We are in the right place, and can try to deserialize
-                String dataJSON = rootObject.get("data").toString();
+                // Iterate through all comments retrieving relevant information and populating POJOs
+                List<Children> children = new ArrayList<>();
+                for (JsonElement comment : commentsChildrenArray) {
+                    JsonObject commentObject = comment.getAsJsonObject();
 
-                try {
-                    posts = new Gson().fromJson(dataJSON, RedditPosts.class);
-                } catch (JsonSyntaxException e) {
-                    e.printStackTrace();
+                    String kind = commentObject.get("kind").getAsString();
+                    if (kind.equals("more")) break; // Last comment processed - we can exit
+
+                    JsonObject commentDataObject = commentObject.get("data").getAsJsonObject();
+
+                    String author = commentDataObject.get("author").getAsString();
+                    String body = commentDataObject.get("body").getAsString();
+                    int score = commentDataObject.get("score").getAsInt();
+                    int created = commentDataObject.get("created").getAsInt();
+
+                    Data data = new Data();
+                    data.setAuthor(author);
+                    data.setBody(body);
+                    data.setScore(score);
+                    data.setCreated(created);
+
+                    Children child = new Children();
+                    child.setData(data);
+
+                    children.add(child);
                 }
+
+                // Recreate nested POJOs, and add the final result to the List
+                Data rootData = new Data();
+                rootData.setChildren(children);
+                comments.setData(rootData);
+                postsAndComments.add(comments);
             }
 
-            return posts;
+            // Retrieve posts or post details, and them to the List
+            try {
+                posts = new Gson().fromJson(postsRootObject.toString(), RedditPosts.class);
+            } catch (JsonSyntaxException e) {
+                e.printStackTrace();
+            }
+            postsAndComments.add(0, posts);
+
+            return postsAndComments;
         }
     }
 }

@@ -2,6 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:fillViewport="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -35,7 +36,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/post_title_tv"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/post_time_and_author_tv"
-            tools:text="@string/tools_upvote_count" />
+            tools:text="@string/tools_score" />
 
         <ImageView
             android:id="@+id/post_image_iv"
@@ -64,6 +65,13 @@
             android:layout_marginTop="4dp"
             android:background="@android:color/darker_gray"
             app:layout_constraintTop_toBottomOf="@+id/comments_tv" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/comments_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/divider_line" />
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>
