@@ -19,18 +19,18 @@ import com.squareup.picasso.Picasso;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostsViewHolder> {
+public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
 
     private RedditPosts mRedditPosts;
     private Context mContext;
 
-    public PostsAdapter(Context context, RedditPosts redditPosts) {
+    public PostAdapter(Context context, RedditPosts redditPosts) {
         mContext = context;
         mRedditPosts = redditPosts;
     }
 
 
-    class PostsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class PostViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.post_thumbnail_iv)
         ImageView mThumbnailIV;
         @BindView(R.id.post_title_tv)
@@ -42,7 +42,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostsViewHol
         @BindView(R.id.post_time_and_author_tv)
         TextView mPostTimeAuthorTV;
 
-        public PostsViewHolder(View itemView) {
+        public PostViewHolder(View itemView) {
             super(itemView);
 
             ButterKnife.bind(this, itemView);
@@ -87,15 +87,15 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostsViewHol
 
     @NonNull
     @Override
-    public PostsAdapter.PostsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public PostViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(mContext);
         View view = layoutInflater.inflate(R.layout.post_list_item, parent, false);
 
-        return new PostsAdapter.PostsViewHolder(view);
+        return new PostViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PostsAdapter.PostsViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
         String thumbnailUrl = mRedditPosts.getChildren().get(position).getData().getThumbnail();
         String title = mRedditPosts.getChildren().get(position).getData().getTitle();
         String subreddit = mRedditPosts.getChildren().get(position).getData().getSubreddit();

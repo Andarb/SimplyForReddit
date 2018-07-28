@@ -3,6 +3,7 @@
 
     <!--Content descriptions for accessibility-->
     <string name="a11y_thumbnail">Post thumbnail</string>
+    <string name="a11y_image">Post image</string>
 
     <!--Tools text used for development purposes only-->
     <string name="tools_title">Ice cave in Iceland during sunset</string>

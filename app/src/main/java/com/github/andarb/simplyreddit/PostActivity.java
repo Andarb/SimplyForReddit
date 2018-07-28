@@ -4,11 +4,14 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.Toast;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.github.andarb.simplyreddit.data.RedditPosts;
 import com.github.andarb.simplyreddit.utils.RetrofitClient;
+import com.squareup.picasso.Picasso;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -19,7 +22,16 @@ public class PostActivity extends AppCompatActivity {
     private static final String TAG = PostActivity.class.getSimpleName();
     public static final String EXTRA_POST = "com.github.andarb.simplyreddit.extra.POST";
 
-    String mPost;
+    @BindView(R.id.post_image_iv)
+    ImageView mImageIV;
+    @BindView(R.id.post_title_tv)
+    TextView mPostTitleTV;
+    @BindView(R.id.post_upvote_count_tv)
+    TextView mPostScoreTV;
+    @BindView(R.id.post_time_and_author_tv)
+    TextView mPostTimeAuthorTV;
+
+    String mPostUrl;
     String mSubreddit;
 
     @Override
@@ -28,11 +40,10 @@ public class PostActivity extends AppCompatActivity {
         setContentView(R.layout.activity_post);
         ButterKnife.bind(this);
 
-        mPost = getIntent().getStringExtra(EXTRA_POST);
+        mPostUrl = getIntent().getStringExtra(EXTRA_POST);
         mSubreddit = getIntent().getStringExtra(SubredditActivity.EXTRA_SUBREDDIT);
-        if (mSubreddit.isEmpty()) mSubreddit = SubredditActivity.DEFAULT_SUBREDDIT;
 
-        Log.w(TAG, "post:" + mPost);
+        if (mSubreddit.isEmpty()) mSubreddit = SubredditActivity.DEFAULT_SUBREDDIT;
 
         setTitle(getString(R.string.prefix_subreddit, mSubreddit));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -43,7 +54,7 @@ public class PostActivity extends AppCompatActivity {
     /* Download and parse a Reddit post */
     private void retrievePost() {
         Call<RedditPosts> getCall;
-        getCall = RetrofitClient.getPost(mPost);
+        getCall = RetrofitClient.getPost(mPostUrl);
 
         getCall.enqueue(new Callback<RedditPosts>() {
             @Override
@@ -57,15 +68,20 @@ public class PostActivity extends AppCompatActivity {
                         return;
                     }
 
-                    Toast.makeText(PostActivity.this, redditPosts.getChildren()
-                            .get(0).getData().getAuthor(), Toast.LENGTH_LONG).show();
+                    String imageUrl = redditPosts.getChildren().get(0).getData().getPreview()
+                            .getImages().get(0).getSource().getUrl();
+                    String title = redditPosts.getChildren().get(0).getData().getTitle();
+                    int score = redditPosts.getChildren().get(0).getData().getScore();
+                    String author = redditPosts.getChildren().get(0).getData().getAuthor();
+                    int time = redditPosts.getChildren().get(0).getData().getCreated();
+
+                    Picasso.get().load(imageUrl).into(mImageIV);
+                    mPostTitleTV.setText(title);
+                    mPostScoreTV.setText(String.valueOf(score));
+                    mPostTimeAuthorTV.setText(getString(R.string.prefix_user, author) + " " + time);
 
                 } else {
                     Log.w(TAG, "Response code:" + response.code());
-                    Log.w(TAG, "Response message:" + response.message());
-                    Log.w(TAG, "Response headers:" + response.headers());
-                    Log.w(TAG, "Response error body:" + response.errorBody());
-                    Log.w(TAG, "Response body:" + response.toString());
                 }
             }
 

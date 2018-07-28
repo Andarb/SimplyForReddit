@@ -7,7 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
-import com.github.andarb.simplyreddit.adapters.PostsAdapter;
+import com.github.andarb.simplyreddit.adapters.PostAdapter;
 import com.github.andarb.simplyreddit.data.RedditPosts;
 import com.github.andarb.simplyreddit.utils.RetrofitClient;
 
@@ -65,11 +65,11 @@ public class SubredditActivity extends AppCompatActivity {
                         return;
                     }
 
-                    PostsAdapter postsAdapter = new PostsAdapter(SubredditActivity.this, redditPosts);
+                    PostAdapter postAdapter = new PostAdapter(SubredditActivity.this, redditPosts);
                     mPostsRV.setLayoutManager(new LinearLayoutManager(SubredditActivity.this,
                             LinearLayoutManager.VERTICAL, false));
                     mPostsRV.setHasFixedSize(true);
-                    mPostsRV.setAdapter(postsAdapter);
+                    mPostsRV.setAdapter(postAdapter);
                 } else {
                     Log.w(TAG, "Response not successful:" + response.code());
                 }

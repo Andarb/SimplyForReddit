@@ -10,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.andarb.simplyreddit.adapters.PostsAdapter;
+import com.github.andarb.simplyreddit.adapters.PostAdapter;
 import com.github.andarb.simplyreddit.data.RedditPosts;
 import com.github.andarb.simplyreddit.utils.RetrofitClient;
 
@@ -98,11 +98,11 @@ public class ViewPagerFragment extends Fragment {
                         return;
                     }
 
-                    PostsAdapter postsAdapter = new PostsAdapter(getActivity(), redditPosts);
+                    PostAdapter postAdapter = new PostAdapter(getActivity(), redditPosts);
                     mPostsRV.setLayoutManager(new LinearLayoutManager(getActivity(),
                             LinearLayoutManager.VERTICAL, false));
                     mPostsRV.setHasFixedSize(true);
-                    mPostsRV.setAdapter(postsAdapter);
+                    mPostsRV.setAdapter(postAdapter);
                 } else {
                     Log.w(TAG, "Response not successful:" + response.code());
                 }

@@ -1,7 +1,5 @@
 package com.github.andarb.simplyreddit.utils;
 
-import android.util.Log;
-
 import com.github.andarb.simplyreddit.data.RedditPosts;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -116,6 +114,7 @@ public final class RetrofitClient {
             RedditPosts posts = null;
             JsonObject rootObject = null;
 
+            // A list of posts will be an object, while specific post details will be an array
             if (json.isJsonObject()) {
                 rootObject = json.getAsJsonObject();
             } else {
@@ -128,10 +127,8 @@ public final class RetrofitClient {
                 String dataJSON = rootObject.get("data").toString();
 
                 try {
-                    Log.w("deserialize", "try");
                     posts = new Gson().fromJson(dataJSON, RedditPosts.class);
                 } catch (JsonSyntaxException e) {
-                    Log.w("deserialize", "catch");
                     e.printStackTrace();
                 }
             }

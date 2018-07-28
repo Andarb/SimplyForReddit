@@ -19,6 +19,8 @@ public class Data {
 
     private String url;
 
+    private Preview preview;
+
     public void setSubreddit(String subreddit) {
         this.subreddit = subreddit;
     }
@@ -89,5 +91,13 @@ public class Data {
 
     public String getUrl() {
         return this.url;
+    }
+
+    public void setPreview(Preview preview) {
+        this.preview = preview;
+    }
+
+    public Preview getPreview() {
+        return this.preview;
     }
 }
