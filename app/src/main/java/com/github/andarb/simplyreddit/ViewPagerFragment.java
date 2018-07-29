@@ -11,10 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.andarb.simplyreddit.adapters.PostAdapter;
-import com.github.andarb.simplyreddit.data.RedditPosts;
+import com.github.andarb.simplyreddit.data.RedditPost;
 import com.github.andarb.simplyreddit.utils.RetrofitClient;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -73,7 +71,7 @@ public class ViewPagerFragment extends Fragment {
 
     /* Download and parse Reddit posts */
     private void retrievePosts() {
-        Call<List<RedditPosts>> getCall;
+        Call<RedditPost> getCall;
         switch (mPage) {
             case 0:
                 getCall = RetrofitClient.getHot();
@@ -88,19 +86,19 @@ public class ViewPagerFragment extends Fragment {
                 getCall = RetrofitClient.getHot();
         }
 
-        getCall.enqueue(new Callback<List<RedditPosts>>() {
+        getCall.enqueue(new Callback<RedditPost>() {
             @Override
-            public void onResponse(Call<List<RedditPosts>> call,
-                                   Response<List<RedditPosts>> response) {
+            public void onResponse(Call<RedditPost> call,
+                                   Response<RedditPost> response) {
                 if (response.isSuccessful()) {
-                    List<RedditPosts> redditPosts = response.body();
+                    RedditPost redditPosts = response.body();
 
                     if (redditPosts == null) {
                         Log.w(TAG, "Failed deserializing JSON");
                         return;
                     }
 
-                    PostAdapter postAdapter = new PostAdapter(getActivity(), redditPosts.get(0));
+                    PostAdapter postAdapter = new PostAdapter(getActivity(), redditPosts.getPosts());
                     mPostsRV.setLayoutManager(new LinearLayoutManager(getActivity(),
                             LinearLayoutManager.VERTICAL, false));
                     mPostsRV.setHasFixedSize(true);
@@ -111,7 +109,7 @@ public class ViewPagerFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<List<RedditPosts>> call, Throwable t) {
+            public void onFailure(Call<RedditPost> call, Throwable t) {
                 Log.w(TAG, "Response failed");
             }
         });

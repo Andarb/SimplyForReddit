@@ -13,18 +13,20 @@ import android.widget.TextView;
 import com.github.andarb.simplyreddit.PostActivity;
 import com.github.andarb.simplyreddit.R;
 import com.github.andarb.simplyreddit.SubredditActivity;
-import com.github.andarb.simplyreddit.data.RedditPosts;
+import com.github.andarb.simplyreddit.data.Post;
 import com.squareup.picasso.Picasso;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
 
-    private RedditPosts mRedditPosts;
+    private List<Post> mRedditPosts;
     private Context mContext;
 
-    public PostAdapter(Context context, RedditPosts redditPosts) {
+    public PostAdapter(Context context, List<Post> redditPosts) {
         mContext = context;
         mRedditPosts = redditPosts;
     }
@@ -54,9 +56,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     int position = getAdapterPosition();
 
                     Intent intent = new Intent(mContext, SubredditActivity.class);
-                    intent.putExtra(SubredditActivity.EXTRA_SUBREDDIT, mRedditPosts.getData().getChildren()
-                            .get(position)
-                            .getData()
+                    intent.putExtra(SubredditActivity.EXTRA_SUBREDDIT, mRedditPosts.get(position)
                             .getSubreddit());
 
                     mContext.startActivity(intent);
@@ -72,14 +72,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             int position = getAdapterPosition();
 
             Intent intent = new Intent(mContext, PostActivity.class);
-            intent.putExtra(SubredditActivity.EXTRA_SUBREDDIT, mRedditPosts.getData().getChildren()
-                    .get(position)
-                    .getData()
+            intent.putExtra(SubredditActivity.EXTRA_SUBREDDIT, mRedditPosts.get(position)
                     .getSubreddit());
-            intent.putExtra(PostActivity.EXTRA_POST, mRedditPosts.getData().getChildren()
-                    .get(position)
-                    .getData()
-                    .getPermalink());
+            intent.putExtra(PostActivity.EXTRA_POST, mRedditPosts.get(position).getPermalink());
 
             mContext.startActivity(intent);
         }
@@ -96,12 +91,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
-        String thumbnailUrl = mRedditPosts.getData().getChildren().get(position).getData().getThumbnail();
-        String title = mRedditPosts.getData().getChildren().get(position).getData().getTitle();
-        String subreddit = mRedditPosts.getData().getChildren().get(position).getData().getSubreddit();
-        int score = mRedditPosts.getData().getChildren().get(position).getData().getScore();
-        String author = mRedditPosts.getData().getChildren().get(position).getData().getAuthor();
-        int time = mRedditPosts.getData().getChildren().get(position).getData().getCreated();
+        String thumbnailUrl = mRedditPosts.get(position).getThumbnail();
+        String title = mRedditPosts.get(position).getTitle();
+        String subreddit = mRedditPosts.get(position).getSubreddit();
+        int score = mRedditPosts.get(position).getScore();
+        String author = mRedditPosts.get(position).getAuthor();
+        int time = mRedditPosts.get(position).getCreated();
 
         Picasso.get().load(thumbnailUrl).into(holder.mThumbnailIV);
         holder.mPostTitleTV.setText(title);
@@ -112,6 +107,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     @Override
     public int getItemCount() {
-        return mRedditPosts.getData().getChildren().size();
+        return mRedditPosts.size();
     }
 }

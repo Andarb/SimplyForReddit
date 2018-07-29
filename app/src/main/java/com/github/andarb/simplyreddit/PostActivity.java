@@ -10,11 +10,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.andarb.simplyreddit.adapters.CommentAdapter;
-import com.github.andarb.simplyreddit.data.RedditPosts;
+import com.github.andarb.simplyreddit.data.RedditPost;
 import com.github.andarb.simplyreddit.utils.RetrofitClient;
 import com.squareup.picasso.Picasso;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -60,31 +58,26 @@ public class PostActivity extends AppCompatActivity {
 
     /* Download and parse a Reddit post */
     private void retrievePost() {
-        Call<List<RedditPosts>> getCall;
+        Call<RedditPost> getCall;
         getCall = RetrofitClient.getPost(mPostUrl);
 
-        getCall.enqueue(new Callback<List<RedditPosts>>() {
+        getCall.enqueue(new Callback<RedditPost>() {
             @Override
-            public void onResponse(Call<List<RedditPosts>> call,
-                                   Response<List<RedditPosts>> response) {
+            public void onResponse(Call<RedditPost> call,
+                                   Response<RedditPost> response) {
                 if (response.isSuccessful()) {
-                    List<RedditPosts> redditPosts = response.body();
+                    RedditPost post = response.body();
 
-                    if (redditPosts == null) {
+                    if (post == null) {
                         Log.w(TAG, "Failed deserializing JSON");
                         return;
                     }
 
-                    String imageUrl = redditPosts.get(0).getData().getChildren().get(0).getData()
-                            .getPreview().getImages().get(0).getSource().getUrl();
-                    String title = redditPosts.get(0).getData().getChildren().get(0).getData()
-                            .getTitle();
-                    int score = redditPosts.get(0).getData().getChildren().get(0).getData()
-                            .getScore();
-                    String author = redditPosts.get(0).getData().getChildren().get(0).getData()
-                            .getAuthor();
-                    int time = redditPosts.get(0).getData().getChildren().get(0).getData()
-                            .getCreated();
+                    String imageUrl = post.getPosts().get(0).getImageUrl();
+                    String title = post.getPosts().get(0).getTitle();
+                    int score = post.getPosts().get(0).getScore();
+                    String author = post.getPosts().get(0).getAuthor();
+                    int time = post.getPosts().get(0).getCreated();
 
                     Picasso.get().load(imageUrl).into(mImageIV);
                     mPostTitleTV.setText(title);
@@ -92,7 +85,7 @@ public class PostActivity extends AppCompatActivity {
                     mPostTimeAuthorTV.setText(getString(R.string.prefix_user, author) + " " + time);
 
                     CommentAdapter commentAdapter =
-                            new CommentAdapter(PostActivity.this, redditPosts.get(1));
+                            new CommentAdapter(PostActivity.this, post.getComments());
                     mCommentsRV.setLayoutManager(new LinearLayoutManager(PostActivity.this,
                             LinearLayoutManager.VERTICAL, false));
                     mCommentsRV.setHasFixedSize(false);
@@ -104,7 +97,7 @@ public class PostActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<RedditPosts>> call, Throwable t) {
+            public void onFailure(Call<RedditPost> call, Throwable t) {
                 Log.w(TAG, "Response failed");
                 Log.w(TAG, t.getMessage());
             }

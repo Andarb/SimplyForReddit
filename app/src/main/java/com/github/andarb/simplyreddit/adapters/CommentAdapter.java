@@ -9,17 +9,19 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.andarb.simplyreddit.R;
-import com.github.andarb.simplyreddit.data.RedditPosts;
+import com.github.andarb.simplyreddit.data.Comment;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentViewHolder> {
 
-    private RedditPosts mComments;
+    private List<Comment> mComments;
     private Context mContext;
 
-    public CommentAdapter(Context context, RedditPosts comments) {
+    public CommentAdapter(Context context, List<Comment> comments) {
         mContext = context;
         mComments = comments;
     }
@@ -51,10 +53,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
 
     @Override
     public void onBindViewHolder(@NonNull CommentViewHolder holder, int position) {
-        String body = mComments.getData().getChildren().get(position).getData().getBody();
-        String author = mComments.getData().getChildren().get(position).getData().getAuthor();
-        int score = mComments.getData().getChildren().get(position).getData().getScore();
-        int time = mComments.getData().getChildren().get(position).getData().getCreated();
+        String body = mComments.get(position).getBody();
+        String author = mComments.get(position).getAuthor();
+        int score = mComments.get(position).getScore();
+        int time = mComments.get(position).getCreated();
 
         holder.mBodyTV.setText(body);
         holder.mAuthorTV.setText(author);
@@ -64,7 +66,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
 
     @Override
     public int getItemCount() {
-        return mComments.getData().getChildren().size();
+        return mComments.size();
     }
 }
 
