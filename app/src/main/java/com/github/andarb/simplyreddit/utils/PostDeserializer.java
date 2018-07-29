@@ -121,16 +121,8 @@ public class PostDeserializer implements JsonDeserializer<RedditPost> {
                 imageUrl = checkNull(postSourceObject, "url");
             }
 
-            Post post = new Post();
-            post.setSubreddit(subreddit);
-            post.setTitle(title);
-            post.setScore(score);
-            post.setThumbnail(thumbnail);
-            post.setCreated(created);
-            post.setAuthor(author);
-            post.setPermalink(permalink);
-            post.setSourceUrl(sourceUrl);
-            post.setImageUrl(imageUrl);
+            Post post = new Post(subreddit, title, score, thumbnail, created, author, permalink,
+                    sourceUrl, imageUrl);
 
             postList.add(post);
         }

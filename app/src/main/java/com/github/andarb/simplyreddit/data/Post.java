@@ -1,7 +1,14 @@
 package com.github.andarb.simplyreddit.data;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+
+@Entity(tableName = "posts")
 public class Post {
 
+    @PrimaryKey(autoGenerate = true)
+    private int id;
     private String subreddit;
     private String title;
     private int score;
@@ -11,6 +18,42 @@ public class Post {
     private String permalink;
     private String sourceUrl;
     private String imageUrl;
+
+    @Ignore
+    public Post(String subreddit, String title, int score, String thumbnail, int created,
+                String author, String permalink, String sourceUrl, String imageUrl) {
+        this.subreddit = subreddit;
+        this.title = title;
+        this.score = score;
+        this.thumbnail = thumbnail;
+        this.created = created;
+        this.author = author;
+        this.permalink = permalink;
+        this.sourceUrl = sourceUrl;
+        this.imageUrl = imageUrl;
+    }
+
+    public Post(int id, String subreddit, String title, int score, String thumbnail, int created,
+                String author, String permalink, String sourceUrl, String imageUrl) {
+        this.id = id;
+        this.subreddit = subreddit;
+        this.title = title;
+        this.score = score;
+        this.thumbnail = thumbnail;
+        this.created = created;
+        this.author = author;
+        this.permalink = permalink;
+        this.sourceUrl = sourceUrl;
+        this.imageUrl = imageUrl;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public void setSubreddit(String subreddit) {
         this.subreddit = subreddit;

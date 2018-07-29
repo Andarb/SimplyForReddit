@@ -26,9 +26,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     private List<Post> mRedditPosts;
     private Context mContext;
 
-    public PostAdapter(Context context, List<Post> redditPosts) {
+    public PostAdapter(Context context) {
         mContext = context;
-        mRedditPosts = redditPosts;
     }
 
 
@@ -107,6 +106,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     @Override
     public int getItemCount() {
-        return mRedditPosts.size();
+        return mRedditPosts == null ? 0 : mRedditPosts.size();
+    }
+
+    public void setPosts(List<Post> posts) {
+        mRedditPosts = posts;
     }
 }

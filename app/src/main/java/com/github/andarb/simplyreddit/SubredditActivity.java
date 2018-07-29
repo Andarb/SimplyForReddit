@@ -65,8 +65,8 @@ public class SubredditActivity extends AppCompatActivity {
                         return;
                     }
 
-                    PostAdapter postAdapter = new PostAdapter(SubredditActivity.this,
-                            redditPosts.getPosts());
+                    PostAdapter postAdapter = new PostAdapter(SubredditActivity.this);
+                    postAdapter.setPosts(redditPosts.getPosts());
                     mPostsRV.setLayoutManager(new LinearLayoutManager(SubredditActivity.this,
                             LinearLayoutManager.VERTICAL, false));
                     mPostsRV.setHasFixedSize(true);

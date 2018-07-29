@@ -1,6 +1,10 @@
 package com.github.andarb.simplyreddit;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,8 +15,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.andarb.simplyreddit.adapters.PostAdapter;
+import com.github.andarb.simplyreddit.data.Post;
 import com.github.andarb.simplyreddit.data.RedditPost;
+import com.github.andarb.simplyreddit.database.AppDatabase;
+import com.github.andarb.simplyreddit.utils.AppExecutor;
+import com.github.andarb.simplyreddit.utils.PostViewModel;
 import com.github.andarb.simplyreddit.utils.RetrofitClient;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,10 +41,12 @@ public class ViewPagerFragment extends Fragment {
     private static final String ARG_PAGE = "com.github.andarb.simplyreddit.arg.PAGE";
 
     private int mPage;
+    private PostAdapter mAdapter;
+    private AppDatabase mDb;
     private Unbinder mButterknifeUnbinder;
 
     @BindView(R.id.posts_recycler_view)
-    RecyclerView mPostsRV;
+    RecyclerView mRecyclerView;
 
     /* Required empty public constructor */
     public ViewPagerFragment() {
@@ -51,7 +63,7 @@ public class ViewPagerFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.post_list, container, false);
         mButterknifeUnbinder = ButterKnife.bind(this, view);
@@ -62,7 +74,27 @@ public class ViewPagerFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        Context context = getActivity();
+        mDb = AppDatabase.getDatabase(context.getApplicationContext());
 
+        // Setup recyclerview adapter
+        mAdapter = new PostAdapter(context);
+        mRecyclerView.setLayoutManager(
+                new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setAdapter(mAdapter);
+
+        // Setup viewmodel for adapter data
+        PostViewModel viewModel = ViewModelProviders.of(this).get(PostViewModel.class);
+        viewModel.getPosts().observe(this, new Observer<List<Post>>() {
+            @Override
+            public void onChanged(@Nullable List<Post> posts) {
+                mAdapter.setPosts(posts);
+                mAdapter.notifyDataSetChanged();
+            }
+        });
+
+        // Check which viewpager page needs to be retrieved
         if (getArguments() != null) {
             mPage = getArguments().getInt(ARG_PAGE);
             retrievePosts();
@@ -91,18 +123,21 @@ public class ViewPagerFragment extends Fragment {
             public void onResponse(Call<RedditPost> call,
                                    Response<RedditPost> response) {
                 if (response.isSuccessful()) {
-                    RedditPost redditPosts = response.body();
+                    final RedditPost redditPosts = response.body();
 
                     if (redditPosts == null) {
                         Log.w(TAG, "Failed deserializing JSON");
                         return;
                     }
 
-                    PostAdapter postAdapter = new PostAdapter(getActivity(), redditPosts.getPosts());
-                    mPostsRV.setLayoutManager(new LinearLayoutManager(getActivity(),
-                            LinearLayoutManager.VERTICAL, false));
-                    mPostsRV.setHasFixedSize(true);
-                    mPostsRV.setAdapter(postAdapter);
+                    AppExecutor.getExecutor().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            mDb.postDao().insertAll(redditPosts.getPosts());
+                        }
+                    });
+
+
                 } else {
                     Log.w(TAG, "Response not successful:" + response.code());
                 }
