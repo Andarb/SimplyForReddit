@@ -18,10 +18,11 @@ public class Post {
     private String permalink;
     private String sourceUrl;
     private String imageUrl;
+    private int page;
 
     @Ignore
     public Post(String subreddit, String title, int score, String thumbnail, int created,
-                String author, String permalink, String sourceUrl, String imageUrl) {
+                String author, String permalink, String sourceUrl, String imageUrl, int page) {
         this.subreddit = subreddit;
         this.title = title;
         this.score = score;
@@ -31,10 +32,11 @@ public class Post {
         this.permalink = permalink;
         this.sourceUrl = sourceUrl;
         this.imageUrl = imageUrl;
+        this.page = page;
     }
 
     public Post(int id, String subreddit, String title, int score, String thumbnail, int created,
-                String author, String permalink, String sourceUrl, String imageUrl) {
+                String author, String permalink, String sourceUrl, String imageUrl, int page) {
         this.id = id;
         this.subreddit = subreddit;
         this.title = title;
@@ -45,6 +47,7 @@ public class Post {
         this.permalink = permalink;
         this.sourceUrl = sourceUrl;
         this.imageUrl = imageUrl;
+        this.page = page;
     }
 
     public int getId() {
@@ -125,5 +128,13 @@ public class Post {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public int getPage() {
+        return page;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
     }
 }

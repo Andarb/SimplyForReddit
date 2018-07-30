@@ -19,7 +19,8 @@ import com.github.andarb.simplyreddit.data.Post;
 import com.github.andarb.simplyreddit.data.RedditPost;
 import com.github.andarb.simplyreddit.database.AppDatabase;
 import com.github.andarb.simplyreddit.utils.AppExecutor;
-import com.github.andarb.simplyreddit.utils.PostViewModel;
+import com.github.andarb.simplyreddit.utils.PagerViewModel;
+import com.github.andarb.simplyreddit.utils.PagerViewModelFactory;
 import com.github.andarb.simplyreddit.utils.RetrofitClient;
 
 import java.util.List;
@@ -75,7 +76,10 @@ public class ViewPagerFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-
+        if (getArguments() != null) {
+            // Set viewpager page that needs to be loaded
+            mPage = getArguments().getInt(ARG_PAGE);
+        }
         Context context = getActivity();
         mDb = AppDatabase.getDatabase(context.getApplicationContext());
 
@@ -87,7 +91,9 @@ public class ViewPagerFragment extends Fragment {
         mRecyclerView.setAdapter(mAdapter);
 
         // Setup viewmodel for adapter data
-        PostViewModel viewModel = ViewModelProviders.of(this).get(PostViewModel.class);
+        PagerViewModelFactory pagerFactory = new PagerViewModelFactory(mDb, mPage);
+        PagerViewModel viewModel = ViewModelProviders.of(this, pagerFactory)
+                .get(PagerViewModel.class);
         viewModel.getPosts().observe(this, new Observer<List<Post>>() {
             @Override
             public void onChanged(@Nullable List<Post> posts) {
@@ -98,30 +104,13 @@ public class ViewPagerFragment extends Fragment {
 
         // Retrieve posts from ViewModel instead of making a network call on configuration change
         if (savedInstanceState == null) {
-            if (getArguments() != null) {
-                // Set viewpager page that needs to be retrieved
-                mPage = getArguments().getInt(ARG_PAGE);
-                retrievePosts();
-            }
+            retrievePosts();
         }
     }
 
     /* Download and parse Reddit posts */
     private void retrievePosts() {
-        Call<RedditPost> getCall;
-        switch (mPage) {
-            case 0:
-                getCall = RetrofitClient.getHot();
-                break;
-            case 1:
-                getCall = RetrofitClient.getTop();
-                break;
-            case 2:
-                getCall = RetrofitClient.getNew();
-                break;
-            default:
-                getCall = RetrofitClient.getHot();
-        }
+        Call<RedditPost> getCall = RetrofitClient.getCategory(mPage);
 
         getCall.enqueue(new Callback<RedditPost>() {
             @Override
@@ -134,6 +123,13 @@ public class ViewPagerFragment extends Fragment {
                         Log.w(TAG, "Failed deserializing JSON");
                         return;
                     }
+
+                    AppExecutor.getExecutor().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            mDb.postDao().deleteCategory(mPage);
+                        }
+                    });
 
                     AppExecutor.getExecutor().execute(new Runnable() {
                         @Override

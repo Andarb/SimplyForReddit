@@ -1,23 +1,19 @@
 package com.github.andarb.simplyreddit.utils;
 
-import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.ViewModel;
 
 import com.github.andarb.simplyreddit.data.Post;
 import com.github.andarb.simplyreddit.database.AppDatabase;
 
 import java.util.List;
 
-public class PostViewModel extends AndroidViewModel {
+public class PagerViewModel extends ViewModel {
 
     private LiveData<List<Post>> posts;
 
-    public PostViewModel(Application application) {
-        super(application);
-
-        AppDatabase database = AppDatabase.getDatabase(this.getApplication());
-        posts = database.postDao().getAll();
+    public PagerViewModel(AppDatabase database, int page) {
+        posts = database.postDao().getCategory(page);
     }
 
     public LiveData<List<Post>> getPosts() {

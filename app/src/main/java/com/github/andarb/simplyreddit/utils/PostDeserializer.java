@@ -20,6 +20,12 @@ import java.util.Objects;
  * This class will retrieve a list of posts, post details and comments when applicable.
  */
 public class PostDeserializer implements JsonDeserializer<RedditPost> {
+    int mPage;
+
+    public PostDeserializer(int page) {
+        mPage = page;
+    }
+
     @Override
     public RedditPost deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
             throws JsonParseException {
@@ -122,7 +128,7 @@ public class PostDeserializer implements JsonDeserializer<RedditPost> {
             }
 
             Post post = new Post(subreddit, title, score, thumbnail, created, author, permalink,
-                    sourceUrl, imageUrl);
+                    sourceUrl, imageUrl, mPage);
 
             postList.add(post);
         }

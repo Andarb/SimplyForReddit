@@ -48,10 +48,10 @@ public final class RetrofitClient {
     }
 
     /* Set up retrofit and its service */
-    private static RedditApi setupRetrofit() {
+    private static RedditApi setupRetrofit(int page) {
         Gson gson = new GsonBuilder()
                 .serializeNulls()
-                .registerTypeAdapter(RedditPost.class, new PostDeserializer())
+                .registerTypeAdapter(RedditPost.class, new PostDeserializer(page))
                 .create();
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -62,37 +62,32 @@ public final class RetrofitClient {
         return retrofit.create(RedditApi.class);
     }
 
-    /* Retrieve latest posts from all subreddits */
-    public static Call<RedditPost> getNew() {
-        RedditApi apiService = setupRetrofit();
+    /* Retrieve a chosen category of posts */
+    public static Call<RedditPost> getCategory(int page) {
+        RedditApi apiService = setupRetrofit(page);
 
-        return apiService.getNewPosts();
-    }
-
-    /* Retrieve hottest posts from all subreddits */
-    public static Call<RedditPost> getHot() {
-        RedditApi apiService = setupRetrofit();
-
-        return apiService.getHotPosts();
-    }
-
-    /* Retrieve top posts from all subreddits */
-    public static Call<RedditPost> getTop() {
-        RedditApi apiService = setupRetrofit();
-
-        return apiService.getTopPosts();
+        switch (page) {
+            case 0:
+                return apiService.getHotPosts();
+            case 1:
+                return apiService.getTopPosts();
+            case 2:
+                return apiService.getNewPosts();
+            default:
+                return apiService.getHotPosts();
+        }
     }
 
     /* Retrieve posts from the chosen subreddit */
     public static Call<RedditPost> getSubreddit(String subreddit) {
-        RedditApi apiService = setupRetrofit();
+        RedditApi apiService = setupRetrofit(-1);
 
         return apiService.getSubreddit(subreddit);
     }
 
     /* Retrieve a chosen post */
     public static Call<RedditPost> getPost(String post) {
-        RedditApi apiService = setupRetrofit();
+        RedditApi apiService = setupRetrofit(-1);
 
         return apiService.getPost(post);
     }
