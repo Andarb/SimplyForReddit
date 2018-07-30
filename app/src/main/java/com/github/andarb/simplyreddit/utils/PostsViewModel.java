@@ -8,12 +8,12 @@ import com.github.andarb.simplyreddit.database.AppDatabase;
 
 import java.util.List;
 
-public class PagerViewModel extends ViewModel {
+public class PostsViewModel extends ViewModel {
 
     private LiveData<List<Post>> posts;
 
-    public PagerViewModel(AppDatabase database, int page) {
-        posts = database.postDao().getCategory(page);
+    public PostsViewModel(AppDatabase database, String category) {
+        posts = database.postDao().getCategory(category);
     }
 
     public LiveData<List<Post>> getPosts() {

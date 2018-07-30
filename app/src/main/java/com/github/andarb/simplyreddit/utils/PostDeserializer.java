@@ -20,10 +20,10 @@ import java.util.Objects;
  * This class will retrieve a list of posts, post details and comments when applicable.
  */
 public class PostDeserializer implements JsonDeserializer<RedditPost> {
-    int mPage;
+    String mCategory;
 
-    public PostDeserializer(int page) {
-        mPage = page;
+    public PostDeserializer(String category) {
+        mCategory = category;
     }
 
     @Override
@@ -106,6 +106,9 @@ public class PostDeserializer implements JsonDeserializer<RedditPost> {
             JsonObject postObject = postElement.getAsJsonObject();
 
             JsonObject postDataObject = postObject.get("data").getAsJsonObject();
+            boolean isOver18 = postDataObject.get("over_18").getAsBoolean();
+            if (isOver18) continue; // Do not show adult content
+
             String subreddit = checkNull(postDataObject, "subreddit");
             String title = checkNull(postDataObject, "title");
             int score = postDataObject.get("score").getAsInt();
@@ -128,7 +131,7 @@ public class PostDeserializer implements JsonDeserializer<RedditPost> {
             }
 
             Post post = new Post(subreddit, title, score, thumbnail, created, author, permalink,
-                    sourceUrl, imageUrl, mPage);
+                    sourceUrl, imageUrl, mCategory);
 
             postList.add(post);
         }

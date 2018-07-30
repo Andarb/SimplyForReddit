@@ -1,8 +1,11 @@
 package com.github.andarb.simplyreddit.utils;
 
+import com.github.andarb.simplyreddit.MainActivity;
 import com.github.andarb.simplyreddit.data.RedditPost;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import java.util.Arrays;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -48,10 +51,10 @@ public final class RetrofitClient {
     }
 
     /* Set up retrofit and its service */
-    private static RedditApi setupRetrofit(int page) {
+    private static RedditApi setupRetrofit(String category) {
         Gson gson = new GsonBuilder()
                 .serializeNulls()
-                .registerTypeAdapter(RedditPost.class, new PostDeserializer(page))
+                .registerTypeAdapter(RedditPost.class, new PostDeserializer(category))
                 .create();
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -63,10 +66,10 @@ public final class RetrofitClient {
     }
 
     /* Retrieve a chosen category of posts */
-    public static Call<RedditPost> getCategory(int page) {
-        RedditApi apiService = setupRetrofit(page);
+    public static Call<RedditPost> getCategory(String category) {
+        RedditApi apiService = setupRetrofit(category);
 
-        switch (page) {
+        switch (Arrays.asList(MainActivity.PAGES).indexOf(category)) {
             case 0:
                 return apiService.getHotPosts();
             case 1:
@@ -80,14 +83,14 @@ public final class RetrofitClient {
 
     /* Retrieve posts from the chosen subreddit */
     public static Call<RedditPost> getSubreddit(String subreddit) {
-        RedditApi apiService = setupRetrofit(-1);
+        RedditApi apiService = setupRetrofit(subreddit);
 
         return apiService.getSubreddit(subreddit);
     }
 
     /* Retrieve a chosen post */
     public static Call<RedditPost> getPost(String post) {
-        RedditApi apiService = setupRetrofit(-1);
+        RedditApi apiService = setupRetrofit(post);
 
         return apiService.getPost(post);
     }

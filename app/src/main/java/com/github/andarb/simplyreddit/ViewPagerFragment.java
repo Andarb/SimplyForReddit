@@ -19,8 +19,8 @@ import com.github.andarb.simplyreddit.data.Post;
 import com.github.andarb.simplyreddit.data.RedditPost;
 import com.github.andarb.simplyreddit.database.AppDatabase;
 import com.github.andarb.simplyreddit.utils.AppExecutor;
-import com.github.andarb.simplyreddit.utils.PagerViewModel;
-import com.github.andarb.simplyreddit.utils.PagerViewModelFactory;
+import com.github.andarb.simplyreddit.utils.PostsViewModel;
+import com.github.andarb.simplyreddit.utils.PostsViewModelFactory;
 import com.github.andarb.simplyreddit.utils.RetrofitClient;
 
 import java.util.List;
@@ -41,7 +41,7 @@ public class ViewPagerFragment extends Fragment {
     private static final String TAG = ViewPagerFragment.class.getSimpleName();
     private static final String ARG_PAGE = "com.github.andarb.simplyreddit.arg.PAGE";
 
-    private int mPage;
+    private String mPage;
     private PostAdapter mAdapter;
     private AppDatabase mDb;
     private Unbinder mButterknifeUnbinder;
@@ -55,10 +55,10 @@ public class ViewPagerFragment extends Fragment {
     }
 
     /* Create a new instance of this fragment with a viewpager page number argument*/
-    public static ViewPagerFragment newInstance(int page) {
+    public static ViewPagerFragment newInstance(String category) {
         ViewPagerFragment fragment = new ViewPagerFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_PAGE, page);
+        args.putString(ARG_PAGE, category);
         fragment.setArguments(args);
         return fragment;
     }
@@ -78,7 +78,7 @@ public class ViewPagerFragment extends Fragment {
 
         if (getArguments() != null) {
             // Set viewpager page that needs to be loaded
-            mPage = getArguments().getInt(ARG_PAGE);
+            mPage = getArguments().getString(ARG_PAGE);
         }
         Context context = getActivity();
         mDb = AppDatabase.getDatabase(context.getApplicationContext());
@@ -91,9 +91,9 @@ public class ViewPagerFragment extends Fragment {
         mRecyclerView.setAdapter(mAdapter);
 
         // Setup viewmodel for adapter data
-        PagerViewModelFactory pagerFactory = new PagerViewModelFactory(mDb, mPage);
-        PagerViewModel viewModel = ViewModelProviders.of(this, pagerFactory)
-                .get(PagerViewModel.class);
+        PostsViewModelFactory factory = new PostsViewModelFactory(mDb, mPage);
+        PostsViewModel viewModel = ViewModelProviders.of(this, factory)
+                .get(PostsViewModel.class);
         viewModel.getPosts().observe(this, new Observer<List<Post>>() {
             @Override
             public void onChanged(@Nullable List<Post> posts) {
@@ -137,8 +137,6 @@ public class ViewPagerFragment extends Fragment {
                             mDb.postDao().insertAll(redditPosts.getPosts());
                         }
                     });
-
-
                 } else {
                     Log.w(TAG, "Response not successful:" + response.code());
                 }

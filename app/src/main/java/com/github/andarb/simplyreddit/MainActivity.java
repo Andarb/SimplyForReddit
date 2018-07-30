@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         // Page to display
         @Override
         public Fragment getItem(int position) {
-            return ViewPagerFragment.newInstance(position);
+            return ViewPagerFragment.newInstance(PAGES[position]);
         }
 
         // Return page title

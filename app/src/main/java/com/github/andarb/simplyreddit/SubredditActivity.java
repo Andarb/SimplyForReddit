@@ -1,5 +1,7 @@
 package com.github.andarb.simplyreddit;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -8,8 +10,15 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import com.github.andarb.simplyreddit.adapters.PostAdapter;
+import com.github.andarb.simplyreddit.data.Post;
 import com.github.andarb.simplyreddit.data.RedditPost;
+import com.github.andarb.simplyreddit.database.AppDatabase;
+import com.github.andarb.simplyreddit.utils.AppExecutor;
+import com.github.andarb.simplyreddit.utils.PostsViewModel;
+import com.github.andarb.simplyreddit.utils.PostsViewModelFactory;
 import com.github.andarb.simplyreddit.utils.RetrofitClient;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,11 +36,12 @@ public class SubredditActivity extends AppCompatActivity {
     public static final String DEFAULT_SUBREDDIT = "all";
     public static final String EXTRA_SUBREDDIT = "com.github.andarb.simplyreddit.extra.SUBREDDIT";
 
-
     @BindView(R.id.posts_recycler_view)
-    RecyclerView mPostsRV;
+    RecyclerView mRecyclerView;
 
-    String mSubreddit;
+    private String mSubreddit;
+    private AppDatabase mDb;
+    private PostAdapter mAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,13 +49,38 @@ public class SubredditActivity extends AppCompatActivity {
         setContentView(R.layout.post_list);
         ButterKnife.bind(this);
 
+        mDb = AppDatabase.getDatabase(getApplicationContext());
+
+        // Retrieve subreddit name to be loaded
         mSubreddit = getIntent().getStringExtra(EXTRA_SUBREDDIT);
         if (mSubreddit.isEmpty()) mSubreddit = DEFAULT_SUBREDDIT;
 
         setTitle(getString(R.string.prefix_subreddit, mSubreddit));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        retrievePosts();
+        // Setup recyclerview adapter
+        mAdapter = new PostAdapter(this);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this,
+                LinearLayoutManager.VERTICAL, false));
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setAdapter(mAdapter);
+
+        // Setup viewmodel for adapter data
+        PostsViewModelFactory factory = new PostsViewModelFactory(mDb, mSubreddit);
+        PostsViewModel viewModel = ViewModelProviders.of(this, factory)
+                .get(PostsViewModel.class);
+        viewModel.getPosts().observe(this, new Observer<List<Post>>() {
+            @Override
+            public void onChanged(@Nullable List<Post> posts) {
+                mAdapter.setPosts(posts);
+                mAdapter.notifyDataSetChanged();
+            }
+        });
+
+        // Retrieve posts from ViewModel instead of making a network call on configuration change
+        if (savedInstanceState == null) {
+            retrievePosts();
+        }
     }
 
     /* Download and parse Reddit posts */
@@ -58,19 +93,26 @@ public class SubredditActivity extends AppCompatActivity {
             public void onResponse(Call<RedditPost> call,
                                    Response<RedditPost> response) {
                 if (response.isSuccessful()) {
-                    RedditPost redditPosts = response.body();
+                    final RedditPost redditPosts = response.body();
 
                     if (redditPosts == null) {
                         Log.w(TAG, "Failed deserializing JSON");
                         return;
                     }
 
-                    PostAdapter postAdapter = new PostAdapter(SubredditActivity.this);
-                    postAdapter.setPosts(redditPosts.getPosts());
-                    mPostsRV.setLayoutManager(new LinearLayoutManager(SubredditActivity.this,
-                            LinearLayoutManager.VERTICAL, false));
-                    mPostsRV.setHasFixedSize(true);
-                    mPostsRV.setAdapter(postAdapter);
+                    AppExecutor.getExecutor().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            mDb.postDao().deleteCategory(mSubreddit);
+                        }
+                    });
+
+                    AppExecutor.getExecutor().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            mDb.postDao().insertAll(redditPosts.getPosts());
+                        }
+                    });
                 } else {
                     Log.w(TAG, "Response not successful:" + response.code());
                 }
