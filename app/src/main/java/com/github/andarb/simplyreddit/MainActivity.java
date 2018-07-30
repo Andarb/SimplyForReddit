@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
         PostsPagerAdapter viewPagerAdapter = new PostsPagerAdapter(getSupportFragmentManager());
         mPager.setAdapter(viewPagerAdapter);
+        mPager.setOffscreenPageLimit(2);
         mTabLayout.setupWithViewPager(mPager);
     }
 

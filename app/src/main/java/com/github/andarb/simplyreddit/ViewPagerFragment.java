@@ -74,6 +74,8 @@ public class ViewPagerFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+
         Context context = getActivity();
         mDb = AppDatabase.getDatabase(context.getApplicationContext());
 
@@ -94,10 +96,13 @@ public class ViewPagerFragment extends Fragment {
             }
         });
 
-        // Check which viewpager page needs to be retrieved
-        if (getArguments() != null) {
-            mPage = getArguments().getInt(ARG_PAGE);
-            retrievePosts();
+        // Retrieve posts from ViewModel instead of making a network call on configuration change
+        if (savedInstanceState == null) {
+            if (getArguments() != null) {
+                // Set viewpager page that needs to be retrieved
+                mPage = getArguments().getInt(ARG_PAGE);
+                retrievePosts();
+            }
         }
     }
 
