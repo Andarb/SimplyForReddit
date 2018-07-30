@@ -86,7 +86,7 @@ public class SubredditActivity extends AppCompatActivity {
     /* Download and parse Reddit posts */
     private void retrievePosts() {
         Call<RedditPost> getCall;
-        getCall = RetrofitClient.getSubreddit(mSubreddit);
+        getCall = RetrofitClient.getCategory(mSubreddit);
 
         getCall.enqueue(new Callback<RedditPost>() {
             @Override

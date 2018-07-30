@@ -77,15 +77,8 @@ public final class RetrofitClient {
             case 2:
                 return apiService.getNewPosts();
             default:
-                return apiService.getHotPosts();
+                return apiService.getSubreddit(category);
         }
-    }
-
-    /* Retrieve posts from the chosen subreddit */
-    public static Call<RedditPost> getSubreddit(String subreddit) {
-        RedditApi apiService = setupRetrofit(subreddit);
-
-        return apiService.getSubreddit(subreddit);
     }
 
     /* Retrieve a chosen post */
