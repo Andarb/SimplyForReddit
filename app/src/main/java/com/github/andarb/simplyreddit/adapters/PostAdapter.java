@@ -97,7 +97,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         String author = mRedditPosts.get(position).getAuthor();
         int time = mRedditPosts.get(position).getCreated();
 
-        if (!thumbnailUrl.isEmpty()) Picasso.get().load(thumbnailUrl).into(holder.mThumbnailIV);
+        if (thumbnailUrl != null && !thumbnailUrl.isEmpty()) {
+            Picasso.get().load(thumbnailUrl).into(holder.mThumbnailIV);
+        }
         holder.mPostTitleTV.setText(title);
         holder.mPostSubredditTV.setText(mContext.getString(R.string.prefix_subreddit, subreddit));
         holder.mPostScoreTV.setText(String.valueOf(score));

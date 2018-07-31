@@ -23,6 +23,8 @@
         <activity
             android:name=".PostActivity"
             android:parentActivityName=".MainActivity" />
+
+        <service android:name=".utils.PostPullService" />
     </application>
 
 </manifest>

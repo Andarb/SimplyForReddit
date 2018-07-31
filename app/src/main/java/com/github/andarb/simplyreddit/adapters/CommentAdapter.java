@@ -21,9 +21,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
     private List<Comment> mComments;
     private Context mContext;
 
-    public CommentAdapter(Context context, List<Comment> comments) {
+    public CommentAdapter(Context context) {
         mContext = context;
-        mComments = comments;
     }
 
     class CommentViewHolder extends RecyclerView.ViewHolder {
@@ -66,7 +65,11 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
 
     @Override
     public int getItemCount() {
-        return mComments.size();
+        return mComments == null ? 0 : mComments.size();
+    }
+
+    public void setComments(List<Comment> comments) {
+        mComments = comments;
     }
 }
 

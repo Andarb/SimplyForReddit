@@ -3,34 +3,29 @@ package com.github.andarb.simplyreddit;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.andarb.simplyreddit.adapters.PostAdapter;
 import com.github.andarb.simplyreddit.data.Post;
-import com.github.andarb.simplyreddit.data.RedditPost;
 import com.github.andarb.simplyreddit.database.AppDatabase;
-import com.github.andarb.simplyreddit.utils.AppExecutor;
-import com.github.andarb.simplyreddit.utils.PostsViewModel;
-import com.github.andarb.simplyreddit.utils.PostsViewModelFactory;
-import com.github.andarb.simplyreddit.utils.RetrofitClient;
+import com.github.andarb.simplyreddit.models.PostsViewModel;
+import com.github.andarb.simplyreddit.models.PostsViewModelFactory;
+import com.github.andarb.simplyreddit.utils.PostPullService;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * A new instance of this fragment is used for each page of the ViewPager.
@@ -104,51 +99,11 @@ public class ViewPagerFragment extends Fragment {
 
         // Retrieve posts from ViewModel instead of making a network call on configuration change
         if (savedInstanceState == null) {
-            retrievePosts();
+            Intent intent = new Intent(context, PostPullService.class);
+            intent.putExtra(PostPullService.EXTRA_CATEGORY, mPage);
+            context.startService(intent);
         }
     }
-
-    /* Download and parse Reddit posts */
-    private void retrievePosts() {
-        Call<RedditPost> getCall = RetrofitClient.getCategory(mPage);
-
-        getCall.enqueue(new Callback<RedditPost>() {
-            @Override
-            public void onResponse(Call<RedditPost> call,
-                                   Response<RedditPost> response) {
-                if (response.isSuccessful()) {
-                    final RedditPost redditPosts = response.body();
-
-                    if (redditPosts == null) {
-                        Log.w(TAG, "Failed deserializing JSON");
-                        return;
-                    }
-
-                    AppExecutor.getExecutor().execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            mDb.postDao().deleteCategory(mPage);
-                        }
-                    });
-
-                    AppExecutor.getExecutor().execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            mDb.postDao().insertAll(redditPosts.getPosts());
-                        }
-                    });
-                } else {
-                    Log.w(TAG, "Response not successful:" + response.code());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RedditPost> call, Throwable t) {
-                Log.w(TAG, "Response failed");
-            }
-        });
-    }
-
 
     @Override
     public void onDestroyView() {

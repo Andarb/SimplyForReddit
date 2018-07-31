@@ -1,4 +1,4 @@
-package com.github.andarb.simplyreddit.utils;
+package com.github.andarb.simplyreddit.models;
 
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
@@ -6,20 +6,20 @@ import android.support.annotation.NonNull;
 
 import com.github.andarb.simplyreddit.database.AppDatabase;
 
-public class PostsViewModelFactory extends ViewModelProvider.NewInstanceFactory {
+public class CommentsViewModelFactory extends ViewModelProvider.NewInstanceFactory {
 
     private final AppDatabase mDb;
-    private final String mCategory;
+    private final String mPost;
 
-    public PostsViewModelFactory(AppDatabase database, String category) {
+    public CommentsViewModelFactory(AppDatabase database, String post) {
         mDb = database;
-        mCategory = category;
+        mPost = post;
     }
 
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         //noinspection unchecked
-        return (T) new PostsViewModel(mDb, mCategory);
+        return (T) new CommentsViewModel(mDb, mPost);
     }
 }

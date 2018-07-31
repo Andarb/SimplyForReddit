@@ -2,7 +2,7 @@ package com.github.andarb.simplyreddit.utils;
 
 import com.github.andarb.simplyreddit.data.Comment;
 import com.github.andarb.simplyreddit.data.Post;
-import com.github.andarb.simplyreddit.data.RedditPost;
+import com.github.andarb.simplyreddit.data.RedditPosts;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -19,7 +19,7 @@ import java.util.Objects;
  * Custom JSON deserializer due to complex nested structure of the JSON returned by Reddit API.
  * This class will retrieve a list of posts, post details and comments when applicable.
  */
-public class PostDeserializer implements JsonDeserializer<RedditPost> {
+public class PostDeserializer implements JsonDeserializer<RedditPosts> {
     String mCategory;
 
     public PostDeserializer(String category) {
@@ -27,10 +27,10 @@ public class PostDeserializer implements JsonDeserializer<RedditPost> {
     }
 
     @Override
-    public RedditPost deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+    public RedditPosts deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
             throws JsonParseException {
 
-        RedditPost redditPost = new RedditPost();
+        RedditPosts redditPosts = new RedditPosts();
 
         try {
             // If root JSON is an object, it will contain a list of posts. Otherwise, it's an
@@ -44,26 +44,26 @@ public class PostDeserializer implements JsonDeserializer<RedditPost> {
                 // Retrieve post comments
                 JsonObject commentsRootObject = json.getAsJsonArray().get(1).getAsJsonObject();
                 List<Comment> comments = deserializeComments(commentsRootObject);
-                redditPost.setComments(comments);
+                redditPosts.setComments(comments);
             }
 
             // Retrieve `after` and `before` for pagination
             JsonObject postsDataObject = postsRootObject.get("data").getAsJsonObject();
             String before = checkNull(postsDataObject, "before");
             String after = checkNull(postsDataObject, "after");
-            redditPost.setBefore(before);
-            redditPost.setAfter(after);
+            redditPosts.setBefore(before);
+            redditPosts.setAfter(after);
 
             // Retrieve posts
             List<Post> posts = deserializePosts(postsDataObject);
-            redditPost.setPosts(posts);
+            redditPosts.setPosts(posts);
 
         } catch (JsonParseException e) {
             e.printStackTrace();
             return null;
         }
 
-        return redditPost;
+        return redditPosts;
     }
 
     private List<Comment> deserializeComments(JsonObject commentsRootObject) {
@@ -80,17 +80,12 @@ public class PostDeserializer implements JsonDeserializer<RedditPost> {
             if (Objects.equals(kind, "more")) break; // Last comment processed - we can exit
 
             JsonObject commentDataObject = commentObject.get("data").getAsJsonObject();
-            String author = checkNull(commentDataObject, "author");
-            String body = checkNull(commentDataObject, "body");
             int score = commentDataObject.get("score").getAsInt();
             int created = commentDataObject.get("created").getAsInt();
+            String author = checkNull(commentDataObject, "author");
+            String body = checkNull(commentDataObject, "body");
 
-            Comment comment = new Comment();
-            comment.setAuthor(author);
-            comment.setBody(body);
-            comment.setScore(score);
-            comment.setCreated(created);
-
+            Comment comment = new Comment(score, created, author, body, mCategory);
             commentList.add(comment);
         }
 
@@ -132,7 +127,6 @@ public class PostDeserializer implements JsonDeserializer<RedditPost> {
 
             Post post = new Post(subreddit, title, score, thumbnail, created, author, permalink,
                     sourceUrl, imageUrl, mCategory);
-
             postList.add(post);
         }
         return postList;

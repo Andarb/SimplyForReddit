@@ -1,7 +1,7 @@
 package com.github.andarb.simplyreddit.utils;
 
 import com.github.andarb.simplyreddit.MainActivity;
-import com.github.andarb.simplyreddit.data.RedditPost;
+import com.github.andarb.simplyreddit.data.RedditPosts;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -35,26 +35,26 @@ public final class RetrofitClient {
     /* Retrofit interface for retrieving posts */
     private interface RedditApi {
         @GET(NEW_POSTS_PATH)
-        Call<RedditPost> getNewPosts();
+        Call<RedditPosts> getNew();
 
         @GET(HOT_POSTS_PATH)
-        Call<RedditPost> getHotPosts();
+        Call<RedditPosts> getHot();
 
         @GET(TOP_POSTS_PATH)
-        Call<RedditPost> getTopPosts();
+        Call<RedditPosts> getTop();
 
         @GET(SUBREDDIT_PATH_MASK)
-        Call<RedditPost> getSubreddit(@Path(SUBREDDIT_PATH) String subreddit);
+        Call<RedditPosts> getSubreddit(@Path(SUBREDDIT_PATH) String subreddit);
 
         @GET(POST_PATH_MASK)
-        Call<RedditPost> getPost(@Path(value = POST_PATH, encoded = true) String post);
+        Call<RedditPosts> getPostDetails(@Path(value = POST_PATH, encoded = true) String post);
     }
 
     /* Set up retrofit and its service */
     private static RedditApi setupRetrofit(String category) {
         Gson gson = new GsonBuilder()
                 .serializeNulls()
-                .registerTypeAdapter(RedditPost.class, new PostDeserializer(category))
+                .registerTypeAdapter(RedditPosts.class, new PostDeserializer(category))
                 .create();
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -66,27 +66,27 @@ public final class RetrofitClient {
     }
 
     /* Retrieve a chosen category of posts */
-    public static Call<RedditPost> getCategory(String category) {
+    public static Call<RedditPosts> getCategory(String category) {
         RedditApi apiService = setupRetrofit(category);
 
         switch (Arrays.asList(MainActivity.PAGES).indexOf(category)) {
             case 0:
-                return apiService.getHotPosts();
+                return apiService.getHot();
             case 1:
-                return apiService.getTopPosts();
+                return apiService.getTop();
             case 2:
-                return apiService.getNewPosts();
+                return apiService.getNew();
             default:
-                return apiService.getSubreddit(category);
+                if (category.contains("/r")) { // then it's a url for post details
+                    return apiService.getPostDetails(category);
+                } else { // otherwise it's just a name for subreddit
+                    return apiService.getSubreddit(category);
+                }
+
         }
     }
 
-    /* Retrieve a chosen post */
-    public static Call<RedditPost> getPost(String post) {
-        RedditApi apiService = setupRetrofit(post);
 
-        return apiService.getPost(post);
-    }
 }
 
 

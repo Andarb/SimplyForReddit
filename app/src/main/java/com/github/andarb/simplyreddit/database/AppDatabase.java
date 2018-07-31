@@ -5,9 +5,10 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
+import com.github.andarb.simplyreddit.data.Comment;
 import com.github.andarb.simplyreddit.data.Post;
 
-@Database(entities = {Post.class}, version = 1, exportSchema = false)
+@Database(entities = {Post.class, Comment.class}, version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase sAppDatabase;
@@ -21,5 +22,7 @@ public abstract class AppDatabase extends RoomDatabase {
     }
 
     public abstract PostDao postDao();
+
+    public abstract CommentDao commentDao();
 }
 

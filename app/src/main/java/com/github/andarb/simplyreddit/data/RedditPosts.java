@@ -2,7 +2,7 @@ package com.github.andarb.simplyreddit.data;
 
 import java.util.List;
 
-public class RedditPost {
+public class RedditPosts {
 
     private List<Post> posts;
     private List<Comment> comments;
