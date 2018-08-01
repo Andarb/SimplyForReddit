@@ -1,0 +1,8 @@
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="180dp"
+    android:minHeight="110dp"
+    android:updatePeriodMillis="14400000"
+    android:previewImage="@drawable/common_google_signin_btn_icon_light"
+    android:initialLayout="@layout/post_widget"
+    android:resizeMode="horizontal|vertical"
+    android:widgetCategory="home_screen"></appwidget-provider>
