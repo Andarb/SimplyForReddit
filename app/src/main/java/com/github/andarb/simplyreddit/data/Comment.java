@@ -9,14 +9,14 @@ public class Comment {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
-    private int score;
-    private int created;
+    private long score;
+    private long created;
     private String author;
     private String body;
     private String category;
 
     @Ignore
-    public Comment(int score, int created, String author, String body, String category) {
+    public Comment(long score, long created, String author, String body, String category) {
         this.score = score;
         this.created = created;
         this.author = author;
@@ -24,7 +24,7 @@ public class Comment {
         this.category = category;
     }
 
-    public Comment(int id, int score, int created, String author, String body, String category) {
+    public Comment(int id, long score, long created, String author, String body, String category) {
         this.id = id;
         this.score = score;
         this.created = created;
@@ -41,19 +41,19 @@ public class Comment {
         this.id = id;
     }
 
-    public void setScore(int score) {
+    public void setScore(long score) {
         this.score = score;
     }
 
-    public int getScore() {
+    public long getScore() {
         return this.score;
     }
 
-    public void setCreated(int created) {
+    public void setCreated(long created) {
         this.created = created;
     }
 
-    public int getCreated() {
+    public long getCreated() {
         return this.created;
     }
 

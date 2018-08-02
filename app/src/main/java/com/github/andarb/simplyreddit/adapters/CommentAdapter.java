@@ -3,6 +3,7 @@ package com.github.andarb.simplyreddit.adapters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,13 +55,14 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
     public void onBindViewHolder(@NonNull CommentViewHolder holder, int position) {
         String body = mComments.get(position).getBody();
         String author = mComments.get(position).getAuthor();
-        int score = mComments.get(position).getScore();
-        int time = mComments.get(position).getCreated();
+        long score = mComments.get(position).getScore();
+        String time = DateUtils.getRelativeTimeSpanString(mComments.get(position).getCreated(),
+                System.currentTimeMillis(), 0).toString();
 
         holder.mBodyTV.setText(body);
         holder.mAuthorTV.setText(author);
         holder.mScoreTV.setText(String.valueOf(score));
-        holder.mTimeTv.setText(String.valueOf(time));
+        holder.mTimeTv.setText(time);
     }
 
     @Override

@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -73,9 +74,10 @@ public class PostActivity extends AppCompatActivity {
                 if (!(post == null || post.isEmpty())) {
                     String imageUrl = post.get(0).getImageUrl();
                     String title = post.get(0).getTitle();
-                    int score = post.get(0).getScore();
+                    long score = post.get(0).getScore();
                     String author = post.get(0).getAuthor();
-                    int time = post.get(0).getCreated();
+                    String time = DateUtils.getRelativeTimeSpanString(post.get(0).getCreated(),
+                            System.currentTimeMillis(), 0).toString();
 
                     if (imageUrl != null && !imageUrl.isEmpty()) {
                         Picasso.get().load(imageUrl).into(mImageIV);

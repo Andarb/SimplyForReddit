@@ -11,9 +11,9 @@ public class Post {
     private int id;
     private String subreddit;
     private String title;
-    private int score;
+    private long score;
     private String thumbnail;
-    private int created;
+    private long created;
     private String author;
     private String permalink;
     private String sourceUrl;
@@ -21,7 +21,7 @@ public class Post {
     private String category;
 
     @Ignore
-    public Post(String subreddit, String title, int score, String thumbnail, int created,
+    public Post(String subreddit, String title, long score, String thumbnail, long created,
                 String author, String permalink, String sourceUrl, String imageUrl, String category) {
         this.subreddit = subreddit;
         this.title = title;
@@ -35,7 +35,7 @@ public class Post {
         this.category = category;
     }
 
-    public Post(int id, String subreddit, String title, int score, String thumbnail, int created,
+    public Post(int id, String subreddit, String title, long score, String thumbnail, long created,
                 String author, String permalink, String sourceUrl, String imageUrl, String category) {
         this.id = id;
         this.subreddit = subreddit;
@@ -74,11 +74,11 @@ public class Post {
         return this.title;
     }
 
-    public void setScore(int score) {
+    public void setScore(long score) {
         this.score = score;
     }
 
-    public int getScore() {
+    public long getScore() {
         return this.score;
     }
 
@@ -90,11 +90,11 @@ public class Post {
         return this.thumbnail;
     }
 
-    public void setCreated(int created) {
+    public void setCreated(long created) {
         this.created = created;
     }
 
-    public int getCreated() {
+    public long getCreated() {
         return this.created;
     }
 

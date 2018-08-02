@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -93,9 +94,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         String thumbnailUrl = mRedditPosts.get(position).getThumbnail();
         String title = mRedditPosts.get(position).getTitle();
         String subreddit = mRedditPosts.get(position).getSubreddit();
-        int score = mRedditPosts.get(position).getScore();
+        long score = mRedditPosts.get(position).getScore();
         String author = mRedditPosts.get(position).getAuthor();
-        int time = mRedditPosts.get(position).getCreated();
+        String time = DateUtils.getRelativeTimeSpanString(mRedditPosts.get(position).getCreated(),
+                System.currentTimeMillis(), 0).toString();
 
         if (thumbnailUrl != null && !thumbnailUrl.isEmpty()) {
             Picasso.get().load(thumbnailUrl).into(holder.mThumbnailIV);

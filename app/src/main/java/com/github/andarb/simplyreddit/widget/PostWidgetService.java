@@ -3,6 +3,7 @@ package com.github.andarb.simplyreddit.widget;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
@@ -82,7 +83,8 @@ class PostRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     @Override
     public RemoteViews getViewAt(int position) {
         String title = mPosts.get(position).getTitle();
-        String time = String.valueOf(mPosts.get(position).getCreated());
+        String time = DateUtils.getRelativeTimeSpanString(mPosts.get(position).getCreated(),
+                System.currentTimeMillis(), 0, DateUtils.FORMAT_ABBREV_RELATIVE).toString();
         String subreddit = mContext.getString(R.string.prefix_subreddit,
                 mPosts.get(position).getSubreddit());
 

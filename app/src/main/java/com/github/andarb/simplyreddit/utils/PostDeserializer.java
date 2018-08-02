@@ -14,6 +14,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.TimeZone;
 
 /**
  * Custom JSON deserializer due to complex nested structure of the JSON returned by Reddit API.
@@ -80,8 +81,9 @@ public class PostDeserializer implements JsonDeserializer<RedditPosts> {
             if (Objects.equals(kind, "more")) break; // Last comment processed - we can exit
 
             JsonObject commentDataObject = commentObject.get("data").getAsJsonObject();
-            int score = commentDataObject.get("score").getAsInt();
-            int created = commentDataObject.get("created").getAsInt();
+            long score = commentDataObject.get("score").getAsLong();
+            // convert `created` time from seconds to milliseconds
+            long created = getLocalMillis(commentDataObject);
             String author = checkNull(commentDataObject, "author");
             String body = checkNull(commentDataObject, "body");
 
@@ -106,9 +108,9 @@ public class PostDeserializer implements JsonDeserializer<RedditPosts> {
 
             String subreddit = checkNull(postDataObject, "subreddit");
             String title = checkNull(postDataObject, "title");
-            int score = postDataObject.get("score").getAsInt();
+            long score = postDataObject.get("score").getAsLong();
             String thumbnail = checkNull(postDataObject, "thumbnail");
-            int created = postDataObject.get("created").getAsInt();
+            long created = getLocalMillis(postDataObject);
             String author = checkNull(postDataObject, "author");
             String permalink = checkNull(postDataObject, "permalink");
             String sourceUrl = checkNull(postDataObject, "url");
@@ -132,7 +134,14 @@ public class PostDeserializer implements JsonDeserializer<RedditPosts> {
         return postList;
     }
 
+    // Checks if the given String is empty
     private String checkNull(JsonObject jsonObject, String key) {
         return jsonObject.get(key).isJsonNull() ? null : jsonObject.get(key).getAsString();
+    }
+
+    // Converts UTC seconds into local time zone millis
+    private long getLocalMillis(JsonObject jsonObject) {
+        return jsonObject.get("created_utc").getAsLong() * 1000
+                + TimeZone.getDefault().getRawOffset();
     }
 }
