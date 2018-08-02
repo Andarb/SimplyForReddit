@@ -114,18 +114,7 @@ public class PostDeserializer implements JsonDeserializer<RedditPosts> {
             String author = checkNull(postDataObject, "author");
             String permalink = checkNull(postDataObject, "permalink");
             String sourceUrl = checkNull(postDataObject, "url");
-
-            // Url for the post image is nested a few levels down
-            String imageUrl;
-            if (postDataObject.get("preview") == null) {
-                imageUrl = null;
-            } else {
-                JsonObject postPreviewObject = postDataObject.get("preview").getAsJsonObject();
-                JsonArray postImagesArray = postPreviewObject.get("images").getAsJsonArray();
-                JsonObject postImagesFirstObject = postImagesArray.get(0).getAsJsonObject();
-                JsonObject postSourceObject = postImagesFirstObject.get("source").getAsJsonObject();
-                imageUrl = checkNull(postSourceObject, "url");
-            }
+            String imageUrl = getPostType(sourceUrl, postDataObject);
 
             Post post = new Post(subreddit, title, score, thumbnail, created, author, permalink,
                     sourceUrl, imageUrl, mCategory);
@@ -143,5 +132,37 @@ public class PostDeserializer implements JsonDeserializer<RedditPosts> {
     private long getLocalMillis(JsonObject jsonObject) {
         return jsonObject.get("created_utc").getAsLong() * 1000
                 + TimeZone.getDefault().getRawOffset();
+    }
+
+    // Determine if the post is an image, gif or a video
+    private String getPostType(String url, JsonObject dataObject) {
+        if (url == null) {
+            return null;
+        } else if (url.contains(".gifv")) {
+            // Imgur gifv links can be renamed to be gif instead
+            return url.substring(0, url.length() - 1);
+        } else if (url.contains(".gif")) {
+            // Reddit hosted gifs will normally have a direct url
+            return url;
+        } else if (url.contains("gfycat.com")) {
+            // Gfycat gifs have a smaller version of the gif hosted on Reddit
+            if (dataObject.get("media") != null && dataObject.get("media").isJsonObject()) {
+                JsonObject mediaObject = dataObject.get("media").getAsJsonObject();
+                JsonObject oembedObject = mediaObject.get("oembed").getAsJsonObject();
+                return checkNull(oembedObject, "thumbnail_url");
+            }
+        } else {
+            // Regular image can be retrieved a few levels down
+            if (dataObject.get("preview") == null) {
+                return null;
+            } else {
+                JsonObject previewObject = dataObject.get("preview").getAsJsonObject();
+                JsonArray imagesArray = previewObject.get("images").getAsJsonArray();
+                JsonObject imagesFirstObject = imagesArray.get(0).getAsJsonObject();
+                JsonObject sourceObject = imagesFirstObject.get("source").getAsJsonObject();
+                return checkNull(sourceObject, "url");
+            }
+        }
+        return null;
     }
 }

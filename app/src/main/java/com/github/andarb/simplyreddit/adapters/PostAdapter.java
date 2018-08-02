@@ -11,11 +11,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.github.andarb.simplyreddit.PostActivity;
 import com.github.andarb.simplyreddit.R;
 import com.github.andarb.simplyreddit.SubredditActivity;
 import com.github.andarb.simplyreddit.data.Post;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -54,6 +54,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 @Override
                 public void onClick(View view) {
                     int position = getAdapterPosition();
+
+                    if (position < 0) return;
 
                     Intent intent = new Intent(mContext, SubredditActivity.class);
                     intent.putExtra(SubredditActivity.EXTRA_SUBREDDIT, mRedditPosts.get(position)
@@ -100,7 +102,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 System.currentTimeMillis(), 0).toString();
 
         if (thumbnailUrl != null && !thumbnailUrl.isEmpty()) {
-            Picasso.get().load(thumbnailUrl).into(holder.mThumbnailIV);
+            Glide.with(mContext).load(thumbnailUrl).into(holder.mThumbnailIV);
         }
         holder.mPostTitleTV.setText(title);
         holder.mPostSubredditTV.setText(mContext.getString(R.string.prefix_subreddit, subreddit));

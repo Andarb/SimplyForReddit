@@ -12,6 +12,7 @@ import android.text.format.DateUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.github.andarb.simplyreddit.adapters.CommentAdapter;
 import com.github.andarb.simplyreddit.data.Comment;
 import com.github.andarb.simplyreddit.data.Post;
@@ -21,7 +22,6 @@ import com.github.andarb.simplyreddit.models.CommentsViewModelFactory;
 import com.github.andarb.simplyreddit.models.PostsViewModel;
 import com.github.andarb.simplyreddit.models.PostsViewModelFactory;
 import com.github.andarb.simplyreddit.utils.PostPullService;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -80,7 +80,9 @@ public class PostActivity extends AppCompatActivity {
                             System.currentTimeMillis(), 0).toString();
 
                     if (imageUrl != null && !imageUrl.isEmpty()) {
-                        Picasso.get().load(imageUrl).into(mImageIV);
+                        Glide.with(PostActivity.this)
+                                .load(imageUrl)
+                                .into(mImageIV);
                     }
                     mPostTitleTV.setText(title);
                     mPostScoreTV.setText(String.valueOf(score));
