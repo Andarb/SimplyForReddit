@@ -13,16 +13,18 @@ public class Post {
     private String title;
     private long score;
     private String thumbnail;
-    private long created;
+    private long created;       // the time post was created at
     private String author;
-    private String permalink;
-    private String sourceUrl;
-    private String imageUrl;
-    private String category;
+    private String permalink;   // url to the chosen reddit post
+    private String sourceUrl;   // original media source
+    private String mediaUrl;    // preview of the media
+    private String category;    // helper field for distinguishing different posts in db
+    private boolean isVideo;    // if the post contains video - true, in any other case - false
 
     @Ignore
     public Post(String subreddit, String title, long score, String thumbnail, long created,
-                String author, String permalink, String sourceUrl, String imageUrl, String category) {
+                String author, String permalink, String sourceUrl, String mediaUrl, String category,
+                boolean isVideo) {
         this.subreddit = subreddit;
         this.title = title;
         this.score = score;
@@ -31,12 +33,14 @@ public class Post {
         this.author = author;
         this.permalink = permalink;
         this.sourceUrl = sourceUrl;
-        this.imageUrl = imageUrl;
+        this.mediaUrl = mediaUrl;
         this.category = category;
+        this.isVideo = isVideo;
     }
 
     public Post(int id, String subreddit, String title, long score, String thumbnail, long created,
-                String author, String permalink, String sourceUrl, String imageUrl, String category) {
+                String author, String permalink, String sourceUrl, String mediaUrl, String category,
+                boolean isVideo) {
         this.id = id;
         this.subreddit = subreddit;
         this.title = title;
@@ -46,8 +50,9 @@ public class Post {
         this.author = author;
         this.permalink = permalink;
         this.sourceUrl = sourceUrl;
-        this.imageUrl = imageUrl;
+        this.mediaUrl = mediaUrl;
         this.category = category;
+        this.isVideo = isVideo;
     }
 
     public int getId() {
@@ -122,12 +127,12 @@ public class Post {
         return this.sourceUrl;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getMediaUrl() {
+        return mediaUrl;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setMediaUrl(String mediaUrl) {
+        this.mediaUrl = mediaUrl;
     }
 
     public String getCategory() {
@@ -136,5 +141,13 @@ public class Post {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public boolean isVideo() {
+        return isVideo;
+    }
+
+    public void setVideo(boolean video) {
+        isVideo = video;
     }
 }

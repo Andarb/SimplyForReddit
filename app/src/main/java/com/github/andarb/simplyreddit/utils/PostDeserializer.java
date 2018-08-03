@@ -21,7 +21,8 @@ import java.util.TimeZone;
  * This class will retrieve a list of posts, post details and comments when applicable.
  */
 public class PostDeserializer implements JsonDeserializer<RedditPosts> {
-    String mCategory;
+    private String mCategory;
+    private boolean mIsVideo = false;
 
     public PostDeserializer(String category) {
         mCategory = category;
@@ -108,16 +109,17 @@ public class PostDeserializer implements JsonDeserializer<RedditPosts> {
 
             String subreddit = checkNull(postDataObject, "subreddit");
             String title = checkNull(postDataObject, "title");
-            long score = postDataObject.get("score").getAsLong();
             String thumbnail = checkNull(postDataObject, "thumbnail");
-            long created = getLocalMillis(postDataObject);
             String author = checkNull(postDataObject, "author");
             String permalink = checkNull(postDataObject, "permalink");
             String sourceUrl = checkNull(postDataObject, "url");
-            String imageUrl = getPostType(sourceUrl, postDataObject);
+            long score = postDataObject.get("score").getAsLong();
+
+            long created = getLocalMillis(postDataObject);
+            String mediaUrl = getPostType(sourceUrl, postDataObject);
 
             Post post = new Post(subreddit, title, score, thumbnail, created, author, permalink,
-                    sourceUrl, imageUrl, mCategory);
+                    sourceUrl, mediaUrl, mCategory, mIsVideo);
             postList.add(post);
         }
         return postList;
@@ -139,20 +141,26 @@ public class PostDeserializer implements JsonDeserializer<RedditPosts> {
         if (url == null) {
             return null;
         } else if (url.contains(".gifv")) {
-            // Imgur gifv links can be renamed to be gif instead
+            // Imgur provides gifv links that can be renamed to be gif instead
             return url.substring(0, url.length() - 1);
         } else if (url.contains(".gif")) {
-            // Reddit hosted gifs will normally have a direct url
+            // Reddit hosted gifs will have a direct url
             return url;
         } else if (url.contains("gfycat.com")) {
-            // Gfycat gifs have a smaller version of the gif hosted on Reddit
+            // Gfycat gifs have a lighter version of the gif hosted on Reddit
             if (dataObject.get("media") != null && dataObject.get("media").isJsonObject()) {
                 JsonObject mediaObject = dataObject.get("media").getAsJsonObject();
                 JsonObject oembedObject = mediaObject.get("oembed").getAsJsonObject();
                 return checkNull(oembedObject, "thumbnail_url");
             }
         } else {
-            // Regular image can be retrieved a few levels down
+            // This will be either a regular image or a video
+            if (dataObject.get("post_hint") != null) {
+                if (dataObject.get("post_hint").getAsString().contains("video")) mIsVideo = true;
+            }
+
+            // Either way, retrieve the preview image, which can serve as a thumbnail for the video,
+            // or be an actual post image
             if (dataObject.get("preview") == null) {
                 return null;
             } else {

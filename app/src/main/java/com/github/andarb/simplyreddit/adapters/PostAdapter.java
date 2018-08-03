@@ -54,7 +54,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 @Override
                 public void onClick(View view) {
                     int position = getAdapterPosition();
-
                     if (position < 0) return;
 
                     Intent intent = new Intent(mContext, SubredditActivity.class);
@@ -72,6 +71,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
+            if (position < 0) return;
 
             Intent intent = new Intent(mContext, PostActivity.class);
             intent.putExtra(SubredditActivity.EXTRA_SUBREDDIT, mRedditPosts.get(position)
@@ -107,7 +107,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.mPostTitleTV.setText(title);
         holder.mPostSubredditTV.setText(mContext.getString(R.string.prefix_subreddit, subreddit));
         holder.mPostScoreTV.setText(String.valueOf(score));
-        holder.mPostTimeAuthorTV.setText(mContext.getString(R.string.prefix_user, author) + " " + time);
+        holder.mPostTimeAuthorTV.setText(mContext
+                .getString(R.string.prefix_user_time, author, time));
     }
 
     @Override

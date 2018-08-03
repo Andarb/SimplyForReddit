@@ -2,9 +2,9 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:fillViewport="true"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -30,10 +30,22 @@
             tools:text="@string/tools_title" />
 
         <TextView
+            android:id="@+id/post_url_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:maxEms="10"
+            app:layout_constraintStart_toStartOf="@+id/post_title_tv"
+            app:layout_constraintTop_toBottomOf="@+id/post_title_tv"
+            tools:text="@string/tools_title" />
+
+        <TextView
             android:id="@+id/post_upvote_count_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@+id/post_title_tv"
+            app:layout_constraintBottom_toBottomOf="@+id/post_url_tv"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/post_time_and_author_tv"
             tools:text="@string/tools_score" />
@@ -48,14 +60,26 @@
             android:scaleType="centerInside"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/post_title_tv" />
+            app:layout_constraintTop_toBottomOf="@+id/post_url_tv" />
+
+        <ImageView
+            android:id="@+id/play_icon_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/a11y_play_icon"
+            android:src="@drawable/round_play_circle_filled_white_white_48"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/post_image_iv"
+            app:layout_constraintEnd_toEndOf="@+id/post_image_iv"
+            app:layout_constraintStart_toStartOf="@+id/post_image_iv"
+            app:layout_constraintTop_toTopOf="@+id/post_image_iv" />
 
         <TextView
             android:id="@+id/comments_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:text="Comments"
+            android:text="@string/comments_label"
             app:layout_constraintTop_toBottomOf="@+id/post_image_iv" />
 
         <View
