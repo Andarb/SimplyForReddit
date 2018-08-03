@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.github.andarb.simplyreddit.adapters.PostAdapter;
 import com.github.andarb.simplyreddit.data.Post;
@@ -33,9 +34,9 @@ import butterknife.Unbinder;
  */
 public class ViewPagerFragment extends Fragment {
 
-    private static final String TAG = ViewPagerFragment.class.getSimpleName();
     private static final String ARG_PAGE = "com.github.andarb.simplyreddit.arg.PAGE";
 
+    private Context mContext;
     private String mPage;
     private PostAdapter mAdapter;
     private AppDatabase mDb;
@@ -43,6 +44,8 @@ public class ViewPagerFragment extends Fragment {
 
     @BindView(R.id.posts_recycler_view)
     RecyclerView mRecyclerView;
+    @BindView(R.id.post_list_pb)
+    ProgressBar mProgressBar;
 
     /* Required empty public constructor */
     public ViewPagerFragment() {
@@ -75,13 +78,13 @@ public class ViewPagerFragment extends Fragment {
             // Set viewpager page that needs to be loaded
             mPage = getArguments().getString(ARG_PAGE);
         }
-        Context context = getActivity();
-        mDb = AppDatabase.getDatabase(context.getApplicationContext());
+        mContext = getActivity();
+        mDb = AppDatabase.getDatabase(mContext.getApplicationContext());
 
         // Setup recyclerview adapter
-        mAdapter = new PostAdapter(context);
+        mAdapter = new PostAdapter(mContext);
         mRecyclerView.setLayoutManager(
-                new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+                new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(mAdapter);
 
@@ -94,15 +97,22 @@ public class ViewPagerFragment extends Fragment {
             public void onChanged(@Nullable List<Post> posts) {
                 mAdapter.setPosts(posts);
                 mAdapter.notifyDataSetChanged();
+                mProgressBar.setVisibility(View.GONE);
             }
         });
 
-        // Retrieve posts from ViewModel instead of making a network call on configuration change
+        // On configuration change retrieve posts from ViewModel. Otherwise, make a network call
         if (savedInstanceState == null) {
-            Intent intent = new Intent(context, PostPullService.class);
-            intent.putExtra(PostPullService.EXTRA_CATEGORY, mPage);
-            context.startService(intent);
+            refreshPage();
         }
+    }
+
+    /* Pull new data from the internet */
+    public void refreshPage() {
+        mProgressBar.setVisibility(View.VISIBLE);
+        Intent intent = new Intent(mContext, PostPullService.class);
+        intent.putExtra(PostPullService.EXTRA_CATEGORY, mPage);
+        mContext.startService(intent);
     }
 
     @Override

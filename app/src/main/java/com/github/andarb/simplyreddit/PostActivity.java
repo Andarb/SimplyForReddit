@@ -9,9 +9,13 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.format.DateUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -49,6 +53,10 @@ public class PostActivity extends AppCompatActivity {
     TextView mTimeAuthorTV;
     @BindView(R.id.comments_recycler_view)
     RecyclerView mRecyclerView;
+    @BindView(R.id.post_toolbar)
+    Toolbar mToolbar;
+    @BindView(R.id.post_details_pb)
+    ProgressBar mProgressBar;
 
     private String mPostUrl;
     private AppDatabase mDb;
@@ -67,8 +75,9 @@ public class PostActivity extends AppCompatActivity {
         String subreddit = getIntent().getStringExtra(SubredditActivity.EXTRA_SUBREDDIT);
         if (subreddit.isEmpty()) subreddit = SubredditActivity.DEFAULT_SUBREDDIT;
 
-        setTitle(getString(R.string.prefix_subreddit, subreddit));
+        setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mToolbar.setTitle(getString(R.string.prefix_subreddit, subreddit));
 
         // Setup recyclerview adapter for comments
         mAdapter = new CommentAdapter(this);
@@ -81,9 +90,7 @@ public class PostActivity extends AppCompatActivity {
 
         // On configuration change, retrieve data from ViewModel instead of making a network call
         if (savedInstanceState == null) {
-            Intent intent = new Intent(this, PostPullService.class);
-            intent.putExtra(PostPullService.EXTRA_CATEGORY, mPostUrl);
-            startService(intent);
+            refreshpost();
         }
     }
 
@@ -116,7 +123,7 @@ public class PostActivity extends AppCompatActivity {
                         // If this is a video, display a play icon on top of the preview image,
                         // and tint it
                         if (isVideo) {
-                            mImageIV.setColorFilter(getResources().getColor(R.color.imageTint));
+                            mImageIV.setColorFilter(getResources().getColor(R.color.colorImageTint));
                             mPlayIconIV.setVisibility(View.VISIBLE);
                         }
                     }
@@ -140,6 +147,7 @@ public class PostActivity extends AppCompatActivity {
                     mUrlTV.setText(removeHttpString(sourceUrl));
                     mScoreTV.setText(String.valueOf(score));
                 }
+                mProgressBar.setVisibility(View.GONE);
             }
         });
 
@@ -154,6 +162,14 @@ public class PostActivity extends AppCompatActivity {
                 mAdapter.notifyDataSetChanged();
             }
         });
+    }
+
+    /* Pull new data from the internet */
+    private void refreshpost() {
+        mProgressBar.setVisibility(View.VISIBLE);
+        Intent intent = new Intent(this, PostPullService.class);
+        intent.putExtra(PostPullService.EXTRA_CATEGORY, mPostUrl);
+        startService(intent);
     }
 
     // Opens a browser to view the media source URL
@@ -177,5 +193,23 @@ public class PostActivity extends AppCompatActivity {
         }
 
         return url;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.refresh, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_refresh:
+                refreshpost();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
     }
 }

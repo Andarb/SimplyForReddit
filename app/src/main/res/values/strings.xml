@@ -8,6 +8,9 @@
     <!-- Label for a list of comments -->
     <string name="comments_label">Comments</string>
 
+    <!-- Refresh icon menu item title -->
+    <string name="action_refresh">Refresh</string>
+
     <!-- Content descriptions for accessibility -->
     <string name="a11y_thumbnail">Post thumbnail</string>
     <string name="a11y_image">Post image</string>
