@@ -1,15 +1,24 @@
 package com.github.andarb.simplyreddit;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.github.andarb.simplyreddit.utils.PostPullService;
+
+import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.pager_toolbar)
     Toolbar mToolbar;
 
+    private StatusReceiver mStatusReceiver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +44,17 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         setSupportActionBar(mToolbar);
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Register download status receiver
+        mStatusReceiver = new StatusReceiver();
+        IntentFilter intentFilter = new IntentFilter(PostPullService.ACTION_BROADCAST);
+        LocalBroadcastManager.getInstance(this).registerReceiver(mStatusReceiver, intentFilter);
 
         // Setup ViewPager
         PostsPagerAdapter viewPagerAdapter = new PostsPagerAdapter(getSupportFragmentManager());
@@ -41,6 +63,13 @@ public class MainActivity extends AppCompatActivity {
         mTabLayout.setupWithViewPager(mPager);
     }
 
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mStatusReceiver);
+    }
 
     /* Switch between different post categories (see PAGES[]) */
     public static class PostsPagerAdapter extends FragmentPagerAdapter {
@@ -85,6 +114,26 @@ public class MainActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
 
+        }
+    }
+
+    /* Hides progressbar when new data is received, or the retrieval fails */
+    private class StatusReceiver extends BroadcastReceiver {
+        private StatusReceiver() {
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            String extra = intent.getStringExtra(PostPullService.EXTRA_BROADCAST);
+            int page = Arrays.asList(MainActivity.PAGES).indexOf(extra);
+
+            if (action != null && action.equals(PostPullService.ACTION_BROADCAST) && page != -1) {
+                ViewPagerFragment pagerFragment = (ViewPagerFragment) mPager.getAdapter()
+                        .instantiateItem(mPager, page);
+
+                pagerFragment.hideProgressBar();
+            }
         }
     }
 }

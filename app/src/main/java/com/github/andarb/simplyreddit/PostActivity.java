@@ -2,10 +2,14 @@ package com.github.andarb.simplyreddit;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -61,6 +65,8 @@ public class PostActivity extends AppCompatActivity {
     private String mPostUrl;
     private AppDatabase mDb;
     private CommentAdapter mAdapter;
+    private StatusReceiver mStatusReceiver;
+    private boolean mIsNewActivity = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -88,10 +94,7 @@ public class PostActivity extends AppCompatActivity {
 
         setupViewModels();
 
-        // On configuration change, retrieve data from ViewModel instead of making a network call
-        if (savedInstanceState == null) {
-            refreshpost();
-        }
+        if (savedInstanceState == null) mIsNewActivity = true;
     }
 
     /* Configures ViewModels for post details and comments */
@@ -147,7 +150,6 @@ public class PostActivity extends AppCompatActivity {
                     mUrlTV.setText(removeHttpString(sourceUrl));
                     mScoreTV.setText(String.valueOf(score));
                 }
-                mProgressBar.setVisibility(View.GONE);
             }
         });
 
@@ -196,6 +198,27 @@ public class PostActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Register download status receiver
+        mStatusReceiver = new StatusReceiver();
+        IntentFilter intentFilter = new IntentFilter(PostPullService.ACTION_BROADCAST);
+        LocalBroadcastManager.getInstance(this).registerReceiver(mStatusReceiver, intentFilter);
+
+        // On configuration change retrieve posts from ViewModel instead of making a network call
+        if (mIsNewActivity) refreshpost();
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mStatusReceiver);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.refresh, menu);
         return true;
@@ -210,6 +233,24 @@ public class PostActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
 
+        }
+    }
+
+    /* Hides progressbar when new data is received, or the retrieval fails */
+    private class StatusReceiver extends BroadcastReceiver {
+        private StatusReceiver() {
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            String extra = intent.getStringExtra(PostPullService.EXTRA_BROADCAST);
+
+            if (action != null && action.equals(PostPullService.ACTION_BROADCAST)) {
+                if (extra != null && extra.equals(mPostUrl)) {
+                    mProgressBar.setVisibility(View.GONE);
+                }
+            }
         }
     }
 }

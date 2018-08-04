@@ -2,9 +2,13 @@ package com.github.andarb.simplyreddit;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -46,6 +50,8 @@ public class SubredditActivity extends AppCompatActivity {
     private String mSubreddit;
     private AppDatabase mDb;
     private PostAdapter mAdapter;
+    private StatusReceiver mStatusReceiver;
+    private boolean mIsNewActivity = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -79,14 +85,11 @@ public class SubredditActivity extends AppCompatActivity {
             public void onChanged(@Nullable List<Post> posts) {
                 mAdapter.setPosts(posts);
                 mAdapter.notifyDataSetChanged();
-                mProgressBar.setVisibility(View.GONE);
             }
         });
 
-        // Retrieve posts from ViewModel instead of making a network call on configuration change
-        if (savedInstanceState == null) {
-            refreshList();
-        }
+
+        if (savedInstanceState == null) mIsNewActivity = true;
     }
 
     /* Pull new data from the internet */
@@ -95,6 +98,28 @@ public class SubredditActivity extends AppCompatActivity {
         Intent intent = new Intent(this, PostPullService.class);
         intent.putExtra(PostPullService.EXTRA_CATEGORY, mSubreddit);
         startService(intent);
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Register download status receiver
+        mStatusReceiver = new StatusReceiver();
+        IntentFilter intentFilter = new IntentFilter(PostPullService.ACTION_BROADCAST);
+        LocalBroadcastManager.getInstance(this).registerReceiver(mStatusReceiver, intentFilter);
+
+        // On configuration change retrieve posts from ViewModel instead of making a network call
+        if (mIsNewActivity) refreshList();
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mStatusReceiver);
     }
 
     @Override
@@ -112,6 +137,24 @@ public class SubredditActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
 
+        }
+    }
+
+    /* Hides progressbar when new data is received, or the retrieval fails */
+    private class StatusReceiver extends BroadcastReceiver {
+        private StatusReceiver() {
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            String extra = intent.getStringExtra(PostPullService.EXTRA_BROADCAST);
+
+            if (action != null && action.equals(PostPullService.ACTION_BROADCAST)) {
+                if (extra != null && extra.equals(mSubreddit)) {
+                    mProgressBar.setVisibility(View.GONE);
+                }
+            }
         }
     }
 }

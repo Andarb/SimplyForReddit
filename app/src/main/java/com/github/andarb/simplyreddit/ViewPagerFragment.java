@@ -61,6 +61,7 @@ public class ViewPagerFragment extends Fragment {
         return fragment;
     }
 
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -97,7 +98,6 @@ public class ViewPagerFragment extends Fragment {
             public void onChanged(@Nullable List<Post> posts) {
                 mAdapter.setPosts(posts);
                 mAdapter.notifyDataSetChanged();
-                mProgressBar.setVisibility(View.GONE);
             }
         });
 
@@ -113,6 +113,11 @@ public class ViewPagerFragment extends Fragment {
         Intent intent = new Intent(mContext, PostPullService.class);
         intent.putExtra(PostPullService.EXTRA_CATEGORY, mPage);
         mContext.startService(intent);
+    }
+
+    /* Invoked from MainActivity after it receives a broadcast confirming data retrieval */
+    public void hideProgressBar() {
+        mProgressBar.setVisibility(View.GONE);
     }
 
     @Override
