@@ -21,6 +21,7 @@ import com.github.andarb.simplyreddit.database.AppDatabase;
 import com.github.andarb.simplyreddit.models.PostsViewModel;
 import com.github.andarb.simplyreddit.models.PostsViewModelFactory;
 import com.github.andarb.simplyreddit.utils.PostPullService;
+import com.paginate.Paginate;
 
 import java.util.List;
 
@@ -41,6 +42,7 @@ public class ViewPagerFragment extends Fragment {
     private PostAdapter mAdapter;
     private AppDatabase mDb;
     private Unbinder mButterknifeUnbinder;
+    private boolean mIsLoading;
 
     @BindView(R.id.posts_recycler_view)
     RecyclerView mRecyclerView;
@@ -82,12 +84,7 @@ public class ViewPagerFragment extends Fragment {
         mContext = getActivity();
         mDb = AppDatabase.getDatabase(mContext.getApplicationContext());
 
-        // Setup recyclerview adapter
-        mAdapter = new PostAdapter(mContext);
-        mRecyclerView.setLayoutManager(
-                new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setAdapter(mAdapter);
+        setupRvAdapter();
 
         // Setup viewmodel for adapter data
         PostsViewModelFactory factory = new PostsViewModelFactory(mDb, mPage);
@@ -110,6 +107,7 @@ public class ViewPagerFragment extends Fragment {
     /* Pull new data from the internet */
     public void refreshPage() {
         mProgressBar.setVisibility(View.VISIBLE);
+        mIsLoading = true;
         Intent intent = new Intent(mContext, PostPullService.class);
         intent.putExtra(PostPullService.EXTRA_CATEGORY, mPage);
         mContext.startService(intent);
@@ -118,6 +116,43 @@ public class ViewPagerFragment extends Fragment {
     /* Invoked from MainActivity after it receives a broadcast confirming data retrieval */
     public void hideProgressBar() {
         mProgressBar.setVisibility(View.GONE);
+        mIsLoading = false;
+    }
+
+    /* Setup RecyclerView adapter */
+    private void setupRvAdapter() {
+        mAdapter = new PostAdapter(mContext);
+        mRecyclerView.setLayoutManager(
+                new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setAdapter(mAdapter);
+
+        Paginate.Callbacks callbacks = new Paginate.Callbacks() {
+            @Override
+            public void onLoadMore() {
+                mIsLoading = true;
+                Intent intent = new Intent(mContext, PostPullService.class);
+                intent.putExtra(PostPullService.EXTRA_CATEGORY, mPage);
+                intent.putExtra(PostPullService.EXTRA_AFTER, mAdapter.getAfterKey());
+                mContext.startService(intent);
+            }
+
+            @Override
+            public boolean isLoading() {
+                return mIsLoading;
+            }
+
+            @Override
+            public boolean hasLoadedAllItems() {
+                // If there is no "after" key, then we have reached the end
+                return mAdapter.getAfterKey() == null;
+            }
+        };
+
+        Paginate.with(mRecyclerView, callbacks)
+                .setLoadingTriggerThreshold(1)
+                .addLoadingListItem(true)
+                .build();
     }
 
     @Override

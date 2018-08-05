@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     Toolbar mToolbar;
 
     private StatusReceiver mStatusReceiver;
+    private boolean mIsNewActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        mIsNewActivity = true;
         setSupportActionBar(mToolbar);
     }
 
@@ -56,11 +58,14 @@ public class MainActivity extends AppCompatActivity {
         IntentFilter intentFilter = new IntentFilter(PostPullService.ACTION_BROADCAST);
         LocalBroadcastManager.getInstance(this).registerReceiver(mStatusReceiver, intentFilter);
 
-        // Setup ViewPager
-        PostsPagerAdapter viewPagerAdapter = new PostsPagerAdapter(getSupportFragmentManager());
-        mPager.setAdapter(viewPagerAdapter);
-        mPager.setOffscreenPageLimit(2);
-        mTabLayout.setupWithViewPager(mPager);
+        // This will help us prevent unnecessary network calls when going back in the stack
+        if (mIsNewActivity) {
+            PostsPagerAdapter viewPagerAdapter = new PostsPagerAdapter(getSupportFragmentManager());
+            mPager.setAdapter(viewPagerAdapter);
+            mPager.setOffscreenPageLimit(2);
+            mTabLayout.setupWithViewPager(mPager);
+            mIsNewActivity = false;
+        }
     }
 
 

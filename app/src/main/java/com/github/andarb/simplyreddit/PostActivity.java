@@ -83,6 +83,13 @@ public class PostActivity extends AppCompatActivity {
 
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // This will help us prevent unnecessary network calls when going back in the stack
+                finish();
+            }
+        });
         mToolbar.setTitle(getString(R.string.prefix_subreddit, subreddit));
 
         // Setup recyclerview adapter for comments

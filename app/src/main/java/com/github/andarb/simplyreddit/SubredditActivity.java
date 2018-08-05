@@ -24,6 +24,7 @@ import com.github.andarb.simplyreddit.database.AppDatabase;
 import com.github.andarb.simplyreddit.models.PostsViewModel;
 import com.github.andarb.simplyreddit.models.PostsViewModelFactory;
 import com.github.andarb.simplyreddit.utils.PostPullService;
+import com.paginate.Paginate;
 
 import java.util.List;
 
@@ -51,7 +52,8 @@ public class SubredditActivity extends AppCompatActivity {
     private AppDatabase mDb;
     private PostAdapter mAdapter;
     private StatusReceiver mStatusReceiver;
-    private boolean mIsNewActivity = false;
+    private boolean mIsNewActivity;
+    private boolean mIsLoading;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,13 +70,15 @@ public class SubredditActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mToolbar.setTitle(getString(R.string.prefix_subreddit, mSubreddit));
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // This will help us prevent unnecessary network calls when going back in the stack
+                finish();
+            }
+        });
 
-        // Setup recyclerview adapter
-        mAdapter = new PostAdapter(this);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this,
-                LinearLayoutManager.VERTICAL, false));
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setAdapter(mAdapter);
+        setupRvAdapter();
 
         // Setup viewmodel for adapter data
         PostsViewModelFactory factory = new PostsViewModelFactory(mDb, mSubreddit);
@@ -88,18 +92,54 @@ public class SubredditActivity extends AppCompatActivity {
             }
         });
 
-
         if (savedInstanceState == null) mIsNewActivity = true;
     }
 
     /* Pull new data from the internet */
     private void refreshList() {
+        mIsLoading = true;
         mProgressBar.setVisibility(View.VISIBLE);
         Intent intent = new Intent(this, PostPullService.class);
         intent.putExtra(PostPullService.EXTRA_CATEGORY, mSubreddit);
         startService(intent);
     }
 
+    /* Setup RecyclerView adapter */
+    private void setupRvAdapter() {
+        mAdapter = new PostAdapter(this);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this,
+                LinearLayoutManager.VERTICAL, false));
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setAdapter(mAdapter);
+
+        Paginate.Callbacks callbacks = new Paginate.Callbacks() {
+            @Override
+            public void onLoadMore() {
+                mIsLoading = true;
+                Intent intent = new Intent(SubredditActivity.this,
+                        PostPullService.class);
+                intent.putExtra(PostPullService.EXTRA_CATEGORY, mSubreddit);
+                intent.putExtra(PostPullService.EXTRA_AFTER, mAdapter.getAfterKey());
+                startService(intent);
+            }
+
+            @Override
+            public boolean isLoading() {
+                return mIsLoading;
+            }
+
+            @Override
+            public boolean hasLoadedAllItems() {
+                // If there is no "after" key, then we have reached the end
+                return mAdapter.getAfterKey() == null;
+            }
+        };
+
+        Paginate.with(mRecyclerView, callbacks)
+                .setLoadingTriggerThreshold(1)
+                .addLoadingListItem(true)
+                .build();
+    }
 
     @Override
     protected void onResume() {
@@ -110,8 +150,12 @@ public class SubredditActivity extends AppCompatActivity {
         IntentFilter intentFilter = new IntentFilter(PostPullService.ACTION_BROADCAST);
         LocalBroadcastManager.getInstance(this).registerReceiver(mStatusReceiver, intentFilter);
 
-        // On configuration change retrieve posts from ViewModel instead of making a network call
-        if (mIsNewActivity) refreshList();
+        // On configuration change, or when coming back from another activity,
+        // retrieve posts from ViewModel instead of making another network call
+        if (mIsNewActivity) {
+            refreshList();
+            mIsNewActivity = false;
+        }
     }
 
 
@@ -152,6 +196,7 @@ public class SubredditActivity extends AppCompatActivity {
 
             if (action != null && action.equals(PostPullService.ACTION_BROADCAST)) {
                 if (extra != null && extra.equals(mSubreddit)) {
+                    mIsLoading = false;
                     mProgressBar.setVisibility(View.GONE);
                 }
             }

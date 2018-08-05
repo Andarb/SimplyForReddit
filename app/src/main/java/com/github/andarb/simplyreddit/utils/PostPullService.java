@@ -16,10 +16,17 @@ import retrofit2.Response;
 
 public class PostPullService extends IntentService {
     private static final String TAG = PostPullService.class.getSimpleName();
+
     public static final String ACTION_BROADCAST =
             "com.github.andarb.simplyreddit.action.BROADCAST";
     public static final String EXTRA_BROADCAST = "com.github.andarb.simplyreddit.extra.BROADCAST";
     public static final String EXTRA_CATEGORY = "com.github.andarb.simplyreddit.extra.CATEGORY";
+    public static final String EXTRA_AFTER = "com.github.andarb.simplyreddit.extra.AFTER";
+
+    private AppDatabase mDb;
+    private String mCategory;
+    private String mAfterKey;
+    private Call<RedditPosts> mCall;
 
     public PostPullService() {
         super("PostPullService");
@@ -27,15 +34,17 @@ public class PostPullService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        final AppDatabase db = AppDatabase.getDatabase(getApplicationContext());
-        final String category = intent.getStringExtra(EXTRA_CATEGORY);
-        Intent statusIntent = new Intent(ACTION_BROADCAST);
-        statusIntent.putExtra(EXTRA_BROADCAST, category);
+        mDb = AppDatabase.getDatabase(getApplicationContext());
+        mCategory = intent.getStringExtra(EXTRA_CATEGORY);
+        mAfterKey = intent.getStringExtra(EXTRA_AFTER);
+        mCall = RetrofitClient.getCategory(mCategory, mAfterKey);
 
-        Call<RedditPosts> call = RetrofitClient.getCategory(category);
+        Intent statusIntent = new Intent(ACTION_BROADCAST);
+        statusIntent.putExtra(EXTRA_BROADCAST, mCategory);
+
         Response<RedditPosts> response;
         try {
-            response = call.execute();
+            response = mCall.execute();
         } catch (IOException e) {
             Log.w(TAG, "No internet connection");
             LocalBroadcastManager.getInstance(this).sendBroadcast(statusIntent);
@@ -51,13 +60,15 @@ public class PostPullService extends IntentService {
                 return;
             }
 
-            db.postDao().deletePosts(category);
-            db.postDao().insertAll(redditPosts.getPosts());
+            if (mAfterKey == null) {
+                mDb.postDao().deletePosts(mCategory);
+            }
+            mDb.postDao().insertAll(redditPosts.getPosts());
 
             if (!(redditPosts.getComments() == null)) {
                 if (!(redditPosts.getComments().isEmpty())) {
-                    db.commentDao().deleteComments(category);
-                    db.commentDao().insertAll(redditPosts.getComments());
+                    mDb.commentDao().deleteComments(mCategory);
+                    mDb.commentDao().insertAll(redditPosts.getComments());
                 }
             }
         } else {

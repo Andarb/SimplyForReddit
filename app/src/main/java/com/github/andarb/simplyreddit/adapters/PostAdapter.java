@@ -119,4 +119,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     public void setPosts(List<Post> posts) {
         mRedditPosts = posts;
     }
+
+    public String getAfterKey() {
+        if (mRedditPosts != null && !mRedditPosts.isEmpty()) {
+            return mRedditPosts.get(getItemCount() - 1).getAfter();
+        } else {
+            return null;
+        }
+
+    }
 }

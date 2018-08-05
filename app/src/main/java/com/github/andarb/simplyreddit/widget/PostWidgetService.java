@@ -45,8 +45,8 @@ class PostRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     /* Download subreddit posts */
     @Override
     public void onDataSetChanged() {
-        // PAGES[0] is "HOT"
-        Call<RedditPosts> call = RetrofitClient.getCategory(MainActivity.PAGES[0]);
+        // PAGES[0] is "HOT". Retrieve only one page, so second parameter is null.
+        Call<RedditPosts> call = RetrofitClient.getCategory(MainActivity.PAGES[0], null);
         Response<RedditPosts> response;
         try {
             response = call.execute();

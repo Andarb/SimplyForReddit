@@ -49,15 +49,8 @@ public class PostDeserializer implements JsonDeserializer<RedditPosts> {
                 redditPosts.setComments(comments);
             }
 
-            // Retrieve `after` and `before` for pagination
-            JsonObject postsDataObject = postsRootObject.get("data").getAsJsonObject();
-            String before = checkNull(postsDataObject, "before");
-            String after = checkNull(postsDataObject, "after");
-            redditPosts.setBefore(before);
-            redditPosts.setAfter(after);
-
             // Retrieve posts
-            List<Post> posts = deserializePosts(postsDataObject);
+            List<Post> posts = deserializePosts(postsRootObject);
             redditPosts.setPosts(posts);
 
         } catch (JsonParseException e) {
@@ -95,7 +88,12 @@ public class PostDeserializer implements JsonDeserializer<RedditPosts> {
         return commentList;
     }
 
-    private List<Post> deserializePosts(JsonObject postsDataObject) {
+    private List<Post> deserializePosts(JsonObject postsRootObject) {
+
+        // Retrieve `after` for pagination
+        JsonObject postsDataObject = postsRootObject.get("data").getAsJsonObject();
+        String after = checkNull(postsDataObject, "after");
+
         JsonArray postsChildrenArray = postsDataObject.get("children").getAsJsonArray();
 
         // Iterate through all posts retrieving relevant information and populating POJOs
@@ -104,11 +102,13 @@ public class PostDeserializer implements JsonDeserializer<RedditPosts> {
             JsonObject postObject = postElement.getAsJsonObject();
 
             JsonObject postDataObject = postObject.get("data").getAsJsonObject();
+            String title = checkNull(postDataObject, "title");
             boolean isOver18 = postDataObject.get("over_18").getAsBoolean();
-            if (isOver18) continue; // Do not show adult content
+
+            // Skip NSFW content
+            if (isOver18 || (title != null && title.contains("NSFW"))) continue;
 
             String subreddit = checkNull(postDataObject, "subreddit");
-            String title = checkNull(postDataObject, "title");
             String thumbnail = checkNull(postDataObject, "thumbnail");
             String author = checkNull(postDataObject, "author");
             String permalink = checkNull(postDataObject, "permalink");
@@ -122,6 +122,9 @@ public class PostDeserializer implements JsonDeserializer<RedditPosts> {
                     sourceUrl, mediaUrl, mCategory, mIsVideo);
             postList.add(post);
         }
+        // Set key (for retrieving next batch of posts) on the last post in the list
+        postList.get(postList.size() - 1).setAfter(after);
+
         return postList;
     }
 
