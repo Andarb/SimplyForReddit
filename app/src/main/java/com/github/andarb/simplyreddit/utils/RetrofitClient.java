@@ -20,7 +20,7 @@ import retrofit2.http.Query;
 public final class RetrofitClient {
 
     // URL details of the API
-    private static final String BASE_URL = "https://www.reddit.com";
+    public static final String BASE_URL = "https://www.reddit.com";
     private static final String RETURN_FORMAT = ".json";
 
     private static final String CATEGORY_PATH = "category";

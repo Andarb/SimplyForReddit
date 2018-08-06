@@ -8,7 +8,10 @@
     <!-- Label for a list of comments -->
     <string name="comments_label">Comments</string>
 
-    <!-- Refresh icon menu item title -->
+    <!-- Text for a button that shows all of the comments -->
+    <string name="see_all_button">See all</string>
+
+    <!-- Refresh icon menu item - title -->
     <string name="action_refresh">Refresh</string>
 
     <!-- Content descriptions for accessibility -->

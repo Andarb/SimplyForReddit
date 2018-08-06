@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,6 +19,7 @@ import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -32,6 +34,7 @@ import com.github.andarb.simplyreddit.models.CommentsViewModelFactory;
 import com.github.andarb.simplyreddit.models.PostsViewModel;
 import com.github.andarb.simplyreddit.models.PostsViewModelFactory;
 import com.github.andarb.simplyreddit.utils.PostPullService;
+import com.github.andarb.simplyreddit.utils.RetrofitClient;
 
 import java.util.List;
 
@@ -55,6 +58,8 @@ public class PostActivity extends AppCompatActivity {
     TextView mScoreTV;
     @BindView(R.id.post_time_and_author_tv)
     TextView mTimeAuthorTV;
+    @BindView(R.id.see_all_button_tv)
+    Button mSeeAllButton;
     @BindView(R.id.comments_recycler_view)
     RecyclerView mRecyclerView;
     @BindView(R.id.post_toolbar)
@@ -115,6 +120,7 @@ public class PostActivity extends AppCompatActivity {
             public void onChanged(@Nullable final List<Post> post) {
                 if (!(post == null || post.isEmpty())) {
                     // Retrieve post details
+                    final String redditUrl = RetrofitClient.BASE_URL + post.get(0).getPermalink();
                     String mediaUrl = post.get(0).getMediaUrl();
                     final String sourceUrl = post.get(0).getSourceUrl();
                     String title = post.get(0).getTitle();
@@ -138,7 +144,7 @@ public class PostActivity extends AppCompatActivity {
                         }
                     }
 
-                    // Clicking on the preview image, or URL will open the source
+                    // Clicking on the preview image or URL will open the media source
                     mImageIV.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -152,10 +158,25 @@ public class PostActivity extends AppCompatActivity {
                         }
                     });
 
-                    mTimeAuthorTV.setText(getString(R.string.prefix_user_time, author, time));
+                    // Clicking on the title or on the "see all" button will open reddit's webpage
+                    mTitleTV.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            launchUrl(redditUrl);
+                        }
+                    });
+                    mSeeAllButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            launchUrl(redditUrl);
+                        }
+                    });
+
                     mTitleTV.setText(title);
-                    mUrlTV.setText(removeHttpString(sourceUrl));
+                    mTimeAuthorTV.setText(getString(R.string.prefix_user_time, author, time));
                     mScoreTV.setText(String.valueOf(score));
+                    mUrlTV.setText(parseLink(sourceUrl));
+                    mUrlTV.setPaintFlags(mUrlTV.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                 }
             }
         });
@@ -190,8 +211,8 @@ public class PostActivity extends AppCompatActivity {
         }
     }
 
-    // For better readability, remove "https://", "http://", "www." from the full URL
-    private String removeHttpString(String url) {
+    // For better readability remove "http(s)" and "www" from the URL
+    private String parseLink(String url) {
         int index = url.indexOf("://");
         if (index != -1) {
             url = url.substring(index + 3, url.length());
