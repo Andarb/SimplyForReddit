@@ -2,6 +2,7 @@ package com.github.andarb.simplyreddit.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
@@ -16,6 +17,7 @@ import com.github.andarb.simplyreddit.PostActivity;
 import com.github.andarb.simplyreddit.R;
 import com.github.andarb.simplyreddit.SubredditActivity;
 import com.github.andarb.simplyreddit.data.Post;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.List;
 
@@ -24,11 +26,16 @@ import butterknife.ButterKnife;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
 
+    private String ANALYTICS_EVENT = "subreddit_view";
+    private String ANALYTICS_PROPERTY = "subreddit_name";
+
+    private FirebaseAnalytics mFirebaseAnalytics;
     private List<Post> mRedditPosts;
     private Context mContext;
 
     public PostAdapter(Context context) {
         mContext = context;
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(mContext);
     }
 
 
@@ -56,9 +63,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     int position = getAdapterPosition();
                     if (position < 0) return;
 
+                    String subreddit = mRedditPosts.get(position).getSubreddit();
+
+                    // Log viewing of this subreddit
+                    Bundle bundle = new Bundle();
+                    bundle.putString(ANALYTICS_PROPERTY, subreddit);
+                    mFirebaseAnalytics.logEvent(ANALYTICS_EVENT, bundle);
+
                     Intent intent = new Intent(mContext, SubredditActivity.class);
-                    intent.putExtra(SubredditActivity.EXTRA_SUBREDDIT, mRedditPosts.get(position)
-                            .getSubreddit());
+                    intent.putExtra(SubredditActivity.EXTRA_SUBREDDIT, subreddit);
 
                     mContext.startActivity(intent);
                 }
