@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">Simply Reddit</string>
 
+    <!-- Refresh icon menu item - title -->
+    <string name="action_refresh">Refresh</string>
+
+    <!-- Toast that appears when the refresh icon in the widget is clicked -->
+    <string name="refresh_toast">Refreshing list</string>
+
     <!-- Text and labels used in the widget -->
     <string name="widget_label">Hot posts</string>
     <string name="widget_empty_list">No posts found</string>
@@ -11,8 +17,6 @@
     <!-- Text for a button that shows all of the comments -->
     <string name="see_all_button">See all</string>
 
-    <!-- Refresh icon menu item - title -->
-    <string name="action_refresh">Refresh</string>
 
     <!-- Content descriptions for accessibility -->
     <string name="a11y_thumbnail">Post thumbnail</string>

@@ -2,8 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/pager_toolbar"
@@ -34,6 +33,6 @@
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         ads:adSize="@string/adunit_size"
-        ads:adUnitId="@string/adunit_id"></com.google.android.gms.ads.AdView>
+        ads:adUnitId="@string/adunit_id" />
 
 </RelativeLayout>

@@ -156,6 +156,13 @@ public class ViewPagerFragment extends Fragment {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+
+        mProgressBar.setVisibility(View.GONE);
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
 
