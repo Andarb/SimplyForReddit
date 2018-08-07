@@ -23,6 +23,10 @@
     <string name="prefix_subreddit" translatable="false">r/%1$s</string>
     <string name="prefix_user_time">Posted by u/%1$s %2$s</string>
 
+    <!-- Properties for an ad banner -->
+    <string name="adunit_size" translatable="false">BANNER</string>
+    <string name="adunit_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
+
     <!-- Tools text used for development purposes only -->
     <string name="tools_title">Ice cave in Iceland during sunset</string>
     <string name="tools_subreddit">r/pics</string>

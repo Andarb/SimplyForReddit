@@ -17,6 +17,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.github.andarb.simplyreddit.utils.PostPullService;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 
 import java.util.Arrays;
 
@@ -28,12 +31,17 @@ public class MainActivity extends AppCompatActivity {
     // Reddit post categories
     public static final String[] PAGES = {"HOT", "TOP", "NEW"};
 
+    // App id used with admob for testing purposes only
+    private static final String ADMOB_ID = "ca-app-pub-3940256099942544~3347511713";
+
     @BindView(R.id.pager)
     ViewPager mPager;
     @BindView(R.id.tab_layout)
     TabLayout mTabLayout;
     @BindView(R.id.pager_toolbar)
     Toolbar mToolbar;
+    @BindView(R.id.admob_banner)
+    AdView mAdView;
 
     private StatusReceiver mStatusReceiver;
     private boolean mIsNewActivity;
@@ -46,6 +54,11 @@ public class MainActivity extends AppCompatActivity {
 
         mIsNewActivity = true;
         setSupportActionBar(mToolbar);
+
+        // Initialize advertisement banner
+        MobileAds.initialize(this, ADMOB_ID);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
     }
 
 
