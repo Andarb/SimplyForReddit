@@ -108,6 +108,7 @@ public class PostDeserializer implements JsonDeserializer<RedditPosts> {
             // Skip NSFW content
             if (isOver18 || (title != null && title.contains("NSFW"))) continue;
 
+            String body = checkNull(postDataObject, "selftext");
             String subreddit = checkNull(postDataObject, "subreddit");
             String thumbnail = checkNull(postDataObject, "thumbnail");
             String author = checkNull(postDataObject, "author");
@@ -119,7 +120,7 @@ public class PostDeserializer implements JsonDeserializer<RedditPosts> {
             String mediaUrl = getPostType(sourceUrl, postDataObject);
 
             Post post = new Post(subreddit, title, score, thumbnail, created, author, permalink,
-                    sourceUrl, mediaUrl, mCategory, mIsVideo);
+                    sourceUrl, mediaUrl, mCategory, mIsVideo, body);
             postList.add(post);
         }
         // Set key (for retrieving next batch of posts) on the last post in the list
@@ -143,26 +144,33 @@ public class PostDeserializer implements JsonDeserializer<RedditPosts> {
     private String getPostType(String url, JsonObject dataObject) {
         if (url == null) {
             return null;
+
+            // Imgur provides gifv links that can be renamed to be gif that we can use
         } else if (url.contains(".gifv")) {
-            // Imgur provides gifv links that can be renamed to be gif instead
             return url.substring(0, url.length() - 1);
-        } else if (url.contains(".gif")) {
+
             // Reddit hosted gifs will have a direct url
+        } else if (url.contains(".gif")) {
             return url;
+
+            // Gfycat gifs normally have a lighter version of the animation hosted on Reddit
         } else if (url.contains("gfycat.com")) {
-            // Gfycat gifs have a lighter version of the gif hosted on Reddit
             if (dataObject.get("media") != null && dataObject.get("media").isJsonObject()) {
                 JsonObject mediaObject = dataObject.get("media").getAsJsonObject();
                 JsonObject oembedObject = mediaObject.get("oembed").getAsJsonObject();
                 return checkNull(oembedObject, "thumbnail_url");
+            } else {
+                mIsVideo = true;
+                return url;
             }
+
+            // If nothing else, this will either be a regular image or a video
         } else {
-            // This will be either a regular image or a video
             if (dataObject.get("post_hint") != null) {
                 if (dataObject.get("post_hint").getAsString().contains("video")) mIsVideo = true;
             }
 
-            // Either way, retrieve the preview image, which can serve as a thumbnail for the video,
+            // Retrieve a preview image, which can serve as a thumbnail for a video,
             // or be an actual post image
             if (dataObject.get("preview") == null) {
                 return null;
@@ -174,6 +182,5 @@ public class PostDeserializer implements JsonDeserializer<RedditPosts> {
                 return checkNull(sourceObject, "url");
             }
         }
-        return null;
     }
 }

@@ -46,6 +46,6 @@
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="@+id/comment_author_tv"
         app:layout_constraintTop_toBottomOf="@+id/comment_author_tv"
-        tools:text="@string/tools_comment_body" />
+        tools:text="@string/tools_body" />
 
 </android.support.constraint.ConstraintLayout>

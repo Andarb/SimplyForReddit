@@ -55,6 +55,16 @@
                 tools:text="@string/tools_title" />
 
             <TextView
+                android:id="@+id/post_body_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="@+id/post_url_tv"
+                app:layout_constraintTop_toBottomOf="@+id/post_url_tv"
+                tools:text="@string/tools_body" />
+
+            <TextView
                 android:id="@+id/post_upvote_count_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -65,28 +75,38 @@
 
             <ImageView
                 android:id="@+id/post_image_iv"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/a11y_image"
-                android:scaleType="centerInside"
+                android:scaleType="fitCenter"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/post_url_tv" />
 
             <ImageView
-                android:id="@+id/play_icon_iv"
+                android:id="@+id/image_placeholder_iv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:contentDescription="@string/a11y_play_icon"
-                android:src="@drawable/round_play_circle_filled_white_white_48"
+                android:contentDescription="@string/a11y_placeholder"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@+id/post_image_iv"
                 app:layout_constraintEnd_toEndOf="@+id/post_image_iv"
                 app:layout_constraintStart_toStartOf="@+id/post_image_iv"
                 app:layout_constraintTop_toTopOf="@+id/post_image_iv" />
 
+            <ImageView
+                android:id="@+id/play_icon_iv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/a11y_play_icon"
+                android:src="@drawable/play_icon_white_48"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/post_image_iv"
+                app:layout_constraintEnd_toEndOf="@+id/post_image_iv"
+                app:layout_constraintStart_toStartOf="@+id/post_image_iv"
+                app:layout_constraintTop_toTopOf="@+id/post_image_iv" />
 
             <TextView
                 android:id="@+id/comments_label_tv"
@@ -103,7 +123,7 @@
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:drawablePadding="4dp"
-                android:drawableStart="@drawable/baseline_open_in_browser_black_18"
+                android:drawableStart="@drawable/browser_icon_black_18"
                 android:minHeight="0dp"
                 android:minWidth="0dp"
                 android:padding="0dp"

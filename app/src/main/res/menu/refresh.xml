@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/action_refresh"
-        android:icon="@drawable/round_refresh_white_24"
+        android:icon="@drawable/refresh_icon_white_24"
         android:title="@string/action_refresh"
         app:showAsAction="always" />
 

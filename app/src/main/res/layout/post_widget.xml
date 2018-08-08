@@ -22,7 +22,7 @@
             android:id="@+id/widget_refresh_iv"
             android:layout_alignParentEnd="true"
             android:tint="@android:color/black"
-            android:src="@drawable/round_refresh_white_24"
+            android:src="@drawable/refresh_icon_white_24"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 

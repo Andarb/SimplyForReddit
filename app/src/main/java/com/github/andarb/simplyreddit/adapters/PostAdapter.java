@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.github.andarb.simplyreddit.PostActivity;
 import com.github.andarb.simplyreddit.R;
 import com.github.andarb.simplyreddit.SubredditActivity;
@@ -114,8 +115,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         String time = DateUtils.getRelativeTimeSpanString(mRedditPosts.get(position).getCreated(),
                 System.currentTimeMillis(), 0).toString();
 
-        if (thumbnailUrl != null && !thumbnailUrl.isEmpty()) {
-            Glide.with(mContext).load(thumbnailUrl).into(holder.mThumbnailIV);
+        if (thumbnailUrl != null && !thumbnailUrl.isEmpty() && thumbnailUrl.contains("http")) {
+            Glide.with(mContext)
+                    .load(thumbnailUrl)
+                    .apply(new RequestOptions().error(R.drawable.broken_image_black_48))
+                    .into(holder.mThumbnailIV);
+        } else {
+            holder.mThumbnailIV.setImageResource(R.drawable.text_icon_black_48);
         }
         holder.mPostTitleTV.setText(title);
         holder.mPostSubredditTV.setText(mContext.getString(R.string.prefix_subreddit, subreddit));

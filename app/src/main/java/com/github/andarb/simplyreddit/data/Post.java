@@ -21,11 +21,12 @@ public class Post {
     private String category;    // helper field for distinguishing different posts in db
     private boolean isVideo;    // if the post contains video - true, in any other case - false
     private String after;       // key used to get the next page in pagination
+    private String body;        // post text body if any
 
     @Ignore
     public Post(String subreddit, String title, long score, String thumbnail, long created,
                 String author, String permalink, String sourceUrl, String mediaUrl, String category,
-                boolean isVideo) {
+                boolean isVideo, String body) {
         this.subreddit = subreddit;
         this.title = title;
         this.score = score;
@@ -37,11 +38,12 @@ public class Post {
         this.mediaUrl = mediaUrl;
         this.category = category;
         this.isVideo = isVideo;
+        this.body = body;
     }
 
     public Post(int id, String subreddit, String title, long score, String thumbnail, long created,
                 String author, String permalink, String sourceUrl, String mediaUrl, String category,
-                boolean isVideo, String after) {
+                boolean isVideo, String after, String body) {
         this.id = id;
         this.subreddit = subreddit;
         this.title = title;
@@ -55,6 +57,7 @@ public class Post {
         this.category = category;
         this.isVideo = isVideo;
         this.after = after;
+        this.body = body;
     }
 
     public int getId() {
@@ -159,5 +162,13 @@ public class Post {
 
     public void setAfter(String after) {
         this.after = after;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
     }
 }

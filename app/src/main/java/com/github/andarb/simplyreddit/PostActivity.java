@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -25,6 +26,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 import com.github.andarb.simplyreddit.adapters.CommentAdapter;
 import com.github.andarb.simplyreddit.data.Comment;
 import com.github.andarb.simplyreddit.data.Post;
@@ -54,6 +60,8 @@ public class PostActivity extends AppCompatActivity {
     TextView mTitleTV;
     @BindView(R.id.post_url_tv)
     TextView mUrlTV;
+    @BindView(R.id.post_body_tv)
+    TextView mBodyTV;
     @BindView(R.id.post_upvote_count_tv)
     TextView mScoreTV;
     @BindView(R.id.post_time_and_author_tv)
@@ -66,6 +74,8 @@ public class PostActivity extends AppCompatActivity {
     Toolbar mToolbar;
     @BindView(R.id.post_details_pb)
     ProgressBar mProgressBar;
+    @BindView(R.id.image_placeholder_iv)
+    ImageView mPlaceholderIv;
 
     private String mPostUrl;
     private AppDatabase mDb;
@@ -118,66 +128,109 @@ public class PostActivity extends AppCompatActivity {
         postsViewModel.getPosts().observe(this, new Observer<List<Post>>() {
             @Override
             public void onChanged(@Nullable final List<Post> post) {
-                if (!(post == null || post.isEmpty())) {
+                if (post != null && !post.isEmpty()) {
+
                     // Retrieve post details
                     final String redditUrl = RetrofitClient.BASE_URL + post.get(0).getPermalink();
                     String mediaUrl = post.get(0).getMediaUrl();
                     final String sourceUrl = post.get(0).getSourceUrl();
                     String title = post.get(0).getTitle();
+                    String body = post.get(0).getBody();
                     long score = post.get(0).getScore();
                     String author = post.get(0).getAuthor();
-                    boolean isVideo = post.get(0).isVideo();
+                    final boolean isVideo = post.get(0).isVideo();
                     String time = DateUtils.getRelativeTimeSpanString(post.get(0).getCreated(),
                             System.currentTimeMillis(), 0).toString();
 
-                    // Load the preview image
-                    if (mediaUrl != null && !mediaUrl.isEmpty()) {
-                        Glide.with(PostActivity.this)
-                                .load(mediaUrl)
-                                .into(mImageIV);
+                    loadMedia(mediaUrl, isVideo);
 
-                        // If this is a video, display a play icon on top of the preview image,
-                        // and tint it
-                        if (isVideo) {
-                            mImageIV.setColorFilter(getResources().getColor(R.color.colorImageTint));
-                            mPlayIconIV.setVisibility(View.VISIBLE);
-                        }
-                    }
-
-                    // Clicking on the preview image or URL will open the media source
-                    mImageIV.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            launchUrl(sourceUrl);
-                        }
-                    });
-                    mUrlTV.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            launchUrl(sourceUrl);
-                        }
-                    });
-
-                    // Clicking on the title or on the "see all" button will open reddit's webpage
-                    mTitleTV.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            launchUrl(redditUrl);
-                        }
-                    });
-                    mSeeAllButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            launchUrl(redditUrl);
-                        }
-                    });
-
+                    // Populate TextViews
                     mTitleTV.setText(title);
                     mTimeAuthorTV.setText(getString(R.string.prefix_user_time, author, time));
                     mScoreTV.setText(String.valueOf(score));
                     mUrlTV.setText(parseLink(sourceUrl));
                     mUrlTV.setPaintFlags(mUrlTV.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                    if (body != null && !body.isEmpty()) {
+                        mBodyTV.setVisibility(View.VISIBLE);
+                        mBodyTV.setText(body);
+                    }
+
+                    setClickListeners(sourceUrl, redditUrl);
                 }
+            }
+
+            /* Load the placeholder animation and the preview image of the media */
+            private void loadMedia(String url, final boolean isVideo) {
+                if (url != null && !url.isEmpty()) {
+
+                    // ImageView does not support GIF by default, so load placeholder with Glide
+                    Glide.with(PostActivity.this)
+                            .load(R.drawable.loading_animation)
+                            .apply(new RequestOptions().override(160, 24))
+                            .into(mPlaceholderIv);
+                    mPlaceholderIv.setVisibility(View.VISIBLE);
+
+                    // Load the media preview
+                    Glide.with(PostActivity.this)
+                            .load(url)
+                            .apply(new RequestOptions().error(R.drawable.broken_image_black_48))
+                            .listener(new RequestListener<Drawable>() {
+                                @Override
+                                public boolean onLoadFailed(
+                                        @Nullable GlideException e, Object model,
+                                        Target<Drawable> target, boolean isFirstResource) {
+                                    mPlaceholderIv.setVisibility(View.GONE);
+                                    return false;
+                                }
+
+                                @Override
+                                public boolean onResourceReady(
+                                        Drawable resource, Object model, Target<Drawable> target,
+                                        DataSource dataSource, boolean isFirstResource) {
+                                    mPlaceholderIv.setVisibility(View.GONE);
+
+                                    // If this is a video, display a play icon on top of the
+                                    // he preview image, and add tint
+                                    if (isVideo) {
+                                        mImageIV.setColorFilter(
+                                                getResources().getColor(R.color.colorImageTint));
+                                        mPlayIconIV.setVisibility(View.VISIBLE);
+                                    }
+                                    return false;
+                                }
+                            })
+                            .into(mImageIV);
+                }
+            }
+
+            private void setClickListeners(final String source, final String reddit) {
+                // Clicking on the preview image or URL will open the media source
+                mImageIV.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        launchUrl(source);
+                    }
+                });
+                mUrlTV.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        launchUrl(source);
+                    }
+                });
+
+                // Clicking on the title or on the "see all" button will open reddit's webpage
+                mTitleTV.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        launchUrl(reddit);
+                    }
+                });
+                mSeeAllButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        launchUrl(reddit);
+                    }
+                });
             }
         });
 

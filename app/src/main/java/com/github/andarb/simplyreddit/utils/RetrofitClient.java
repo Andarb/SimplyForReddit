@@ -49,7 +49,6 @@ public final class RetrofitClient {
     /* Set up retrofit and its service */
     private static RedditApi setupRetrofit(String category) {
         Gson gson = new GsonBuilder()
-                .serializeNulls()
                 .registerTypeAdapter(RedditPosts.class, new PostDeserializer(category))
                 .create();
 
