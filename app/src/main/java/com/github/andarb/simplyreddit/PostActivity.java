@@ -49,7 +49,6 @@ import butterknife.ButterKnife;
 
 public class PostActivity extends AppCompatActivity {
 
-    private static final String TAG = PostActivity.class.getSimpleName();
     public static final String EXTRA_POST = "com.github.andarb.simplyreddit.extra.POST";
 
     @BindView(R.id.post_image_iv)
@@ -81,6 +80,7 @@ public class PostActivity extends AppCompatActivity {
     private AppDatabase mDb;
     private CommentAdapter mAdapter;
     private StatusReceiver mStatusReceiver;
+    private Intent mShareIntent;
     private boolean mIsNewActivity = false;
 
     @Override
@@ -231,6 +231,11 @@ public class PostActivity extends AppCompatActivity {
                         launchUrl(reddit);
                     }
                 });
+
+                mShareIntent = new Intent();
+                mShareIntent.setAction(Intent.ACTION_SEND);
+                mShareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_format, source));
+                mShareIntent.setType("text/plain");
             }
         });
 
@@ -301,7 +306,7 @@ public class PostActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.refresh, menu);
+        getMenuInflater().inflate(R.menu.refresh_and_share, menu);
         return true;
     }
 
@@ -310,10 +315,14 @@ public class PostActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_refresh:
                 refreshpost();
+
+                return true;
+            case R.id.action_share:
+                startActivity(Intent.createChooser(mShareIntent, getString(R.string.action_share)));
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-
         }
     }
 

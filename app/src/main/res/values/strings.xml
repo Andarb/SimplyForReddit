@@ -1,8 +1,12 @@
 <resources>
     <string name="app_name">Simply Reddit</string>
 
-    <!-- Refresh icon menu item - title -->
+    <!-- Menu items -->
     <string name="action_refresh">Refresh</string>
+    <string name="action_share">Share</string>
+
+    <!-- Share a URL of a reddit post when the share action is clicked -->
+    <string name="share_format">Hey! Check this Reddit post out:\n%1$s</string>
 
     <!-- Toast that appears when the refresh icon in the widget is clicked -->
     <string name="refresh_toast">Refreshing list</string>
@@ -17,12 +21,12 @@
     <!-- Text for a button that shows all of the comments -->
     <string name="see_all_button">See all</string>
 
-
     <!-- Content descriptions for accessibility -->
     <string name="a11y_thumbnail">Post thumbnail</string>
     <string name="a11y_image">Post image</string>
     <string name="a11y_play_icon">Video play icon</string>
     <string name="a11y_placeholder">Image loading animation</string>
+    <string name="a11y_share_fab">Share link button</string>
 
     <!-- Prefixes for subreddits, usernames and creation time -->
     <string name="prefix_subreddit" translatable="false">r/%1$s</string>
