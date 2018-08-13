@@ -96,6 +96,7 @@ public class PostActivity extends AppCompatActivity {
         String subreddit = getIntent().getStringExtra(SubredditActivity.EXTRA_SUBREDDIT);
         if (subreddit.isEmpty()) subreddit = SubredditActivity.DEFAULT_SUBREDDIT;
 
+        mToolbar.setTitle(getString(R.string.prefix_subreddit, subreddit));
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -105,7 +106,7 @@ public class PostActivity extends AppCompatActivity {
                 finish();
             }
         });
-        mToolbar.setTitle(getString(R.string.prefix_subreddit, subreddit));
+
 
         // Setup recyclerview adapter for comments
         mAdapter = new CommentAdapter(this);
@@ -136,7 +137,7 @@ public class PostActivity extends AppCompatActivity {
                     final String sourceUrl = post.get(0).getSourceUrl();
                     String title = post.get(0).getTitle();
                     String body = post.get(0).getBody();
-                    long score = post.get(0).getScore();
+                    String score = post.get(0).getScore();
                     String author = post.get(0).getAuthor();
                     final boolean isVideo = post.get(0).isVideo();
                     String time = DateUtils.getRelativeTimeSpanString(post.get(0).getCreated(),
@@ -147,7 +148,7 @@ public class PostActivity extends AppCompatActivity {
                     // Populate TextViews
                     mTitleTV.setText(title);
                     mTimeAuthorTV.setText(getString(R.string.prefix_user_time, author, time));
-                    mScoreTV.setText(String.valueOf(score));
+                    mScoreTV.setText(score);
                     mUrlTV.setText(parseLink(sourceUrl));
                     mUrlTV.setPaintFlags(mUrlTV.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                     if (body != null && !body.isEmpty()) {

@@ -11,7 +11,7 @@ public class Post {
     private int id;
     private String subreddit;
     private String title;
-    private long score;
+    private String score;
     private String thumbnail;
     private long created;       // the time post was created at
     private String author;
@@ -24,7 +24,7 @@ public class Post {
     private String body;        // post text body if any
 
     @Ignore
-    public Post(String subreddit, String title, long score, String thumbnail, long created,
+    public Post(String subreddit, String title, String score, String thumbnail, long created,
                 String author, String permalink, String sourceUrl, String mediaUrl, String category,
                 boolean isVideo, String body) {
         this.subreddit = subreddit;
@@ -41,7 +41,7 @@ public class Post {
         this.body = body;
     }
 
-    public Post(int id, String subreddit, String title, long score, String thumbnail, long created,
+    public Post(int id, String subreddit, String title, String score, String thumbnail, long created,
                 String author, String permalink, String sourceUrl, String mediaUrl, String category,
                 boolean isVideo, String after, String body) {
         this.id = id;
@@ -84,11 +84,11 @@ public class Post {
         return this.title;
     }
 
-    public void setScore(long score) {
+    public void setScore(String score) {
         this.score = score;
     }
 
-    public long getScore() {
+    public String getScore() {
         return this.score;
     }
 

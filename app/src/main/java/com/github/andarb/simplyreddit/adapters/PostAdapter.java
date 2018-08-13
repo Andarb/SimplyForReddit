@@ -49,8 +49,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         TextView mPostSubredditTV;
         @BindView(R.id.post_upvote_count_tv)
         TextView mPostScoreTV;
-        @BindView(R.id.post_time_and_author_tv)
-        TextView mPostTimeAuthorTV;
+        @BindView(R.id.post_time_tv)
+        TextView mPostTimeTV;
 
         public PostViewHolder(View itemView) {
             super(itemView);
@@ -110,8 +110,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         String thumbnailUrl = mRedditPosts.get(position).getThumbnail();
         String title = mRedditPosts.get(position).getTitle();
         String subreddit = mRedditPosts.get(position).getSubreddit();
-        long score = mRedditPosts.get(position).getScore();
-        String author = mRedditPosts.get(position).getAuthor();
+        String score = mRedditPosts.get(position).getScore();
         String time = DateUtils.getRelativeTimeSpanString(mRedditPosts.get(position).getCreated(),
                 System.currentTimeMillis(), 0).toString();
 
@@ -125,9 +124,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         }
         holder.mPostTitleTV.setText(title);
         holder.mPostSubredditTV.setText(mContext.getString(R.string.prefix_subreddit, subreddit));
-        holder.mPostScoreTV.setText(String.valueOf(score));
-        holder.mPostTimeAuthorTV.setText(mContext
-                .getString(R.string.prefix_user_time, author, time));
+        holder.mPostScoreTV.setText(score);
+        holder.mPostTimeTV.setText(mContext.getString(R.string.prefix_time, time));
     }
 
     @Override

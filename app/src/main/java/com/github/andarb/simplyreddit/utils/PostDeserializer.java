@@ -11,6 +11,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
 import java.lang.reflect.Type;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -114,8 +115,8 @@ public class PostDeserializer implements JsonDeserializer<RedditPosts> {
             String author = checkNull(postDataObject, "author");
             String permalink = checkNull(postDataObject, "permalink");
             String sourceUrl = checkNull(postDataObject, "url");
-            long score = postDataObject.get("score").getAsLong();
 
+            String score = getShortenedScore(postDataObject);
             long created = getLocalMillis(postDataObject);
             String mediaUrl = getPostType(sourceUrl, postDataObject);
 
@@ -127,6 +128,21 @@ public class PostDeserializer implements JsonDeserializer<RedditPosts> {
         postList.get(postList.size() - 1).setAfter(after);
 
         return postList;
+    }
+
+    // Add SI prefixes to the score
+    private String getShortenedScore(JsonObject dataObject) {
+        long score = dataObject.get("score").getAsLong();
+
+        DecimalFormat df = new DecimalFormat("#.#");
+
+        if (score / 1000000 > 1) {
+            return df.format(score / 1000000.0) + "M";
+        } else if (score / 1000 > 1) {
+            return df.format(score / 1000.0) + "k";
+        }
+
+        return String.valueOf(score);
     }
 
     // Checks if the given String is empty

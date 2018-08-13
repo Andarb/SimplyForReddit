@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -37,7 +38,6 @@ import butterknife.ButterKnife;
  */
 public class SubredditActivity extends AppCompatActivity {
 
-    private static final String TAG = SubredditActivity.class.getSimpleName();
     public static final String DEFAULT_SUBREDDIT = "all";
     public static final String EXTRA_SUBREDDIT = "com.github.andarb.simplyreddit.extra.SUBREDDIT";
 
@@ -67,9 +67,9 @@ public class SubredditActivity extends AppCompatActivity {
         mSubreddit = getIntent().getStringExtra(EXTRA_SUBREDDIT);
         if (mSubreddit.isEmpty()) mSubreddit = DEFAULT_SUBREDDIT;
 
+        mToolbar.setTitle(getString(R.string.prefix_subreddit, mSubreddit));
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mToolbar.setTitle(getString(R.string.prefix_subreddit, mSubreddit));
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -109,6 +109,8 @@ public class SubredditActivity extends AppCompatActivity {
         mAdapter = new PostAdapter(this);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false));
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(this,
+                DividerItemDecoration.VERTICAL));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(mAdapter);
 

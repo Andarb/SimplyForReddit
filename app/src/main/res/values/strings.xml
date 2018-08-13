@@ -30,7 +30,8 @@
 
     <!-- Prefixes for subreddits, usernames and creation time -->
     <string name="prefix_subreddit" translatable="false">r/%1$s</string>
-    <string name="prefix_user_time">Posted by u/%1$s %2$s</string>
+    <string name="prefix_user_time">by u/%1$s %2$s</string>
+    <string name="prefix_time">\u0020- %1$s</string>
 
     <!-- Properties for an ad banner -->
     <string name="adunit_size" translatable="false">BANNER</string>
@@ -39,7 +40,8 @@
     <!-- Tools text used for development purposes only -->
     <string name="tools_title">Ice cave in Iceland during sunset</string>
     <string name="tools_subreddit">r/pics</string>
-    <string name="tools_time_and_author">by u/IcyDreams 3 hours ago</string>
+    <string name="tools_time_and_author">Posted by u/IcyDreams 3 hours ago</string>
+    <string name="tools_time">3 hours ago</string>
     <string name="tools_score">1265</string>
     <string name="tools_comment_time">2 hours ago</string>
     <string name="tools_comment_author">Madeline_Albright6</string>
