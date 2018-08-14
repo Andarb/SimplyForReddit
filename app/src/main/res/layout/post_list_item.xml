@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="66dp"
-    android:layout_marginTop="8dp"
-    android:layout_marginBottom="8dp">
+    android:layout_marginBottom="8dp"
+    android:layout_marginTop="8dp">
 
     <FrameLayout
         android:layout_width="0dp"
@@ -28,46 +28,58 @@
 
         <TextView
             android:id="@+id/post_title_tv"
-            android:textColor="@android:color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:ellipsize="end"
             android:maxLines="2"
+            android:textColor="@color/colorTextPrimary"
             android:textSize="14sp"
             tools:text="@string/tools_title" />
 
         <TextView
             android:id="@+id/post_subreddit_tv"
-            android:textColor="@android:color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignStart="@id/post_title_tv"
             android:layout_below="@id/post_title_tv"
             android:layout_marginTop="4dp"
+            android:textColor="@color/colorTextPrimary"
             android:textSize="12sp"
             tools:text="@string/tools_subreddit" />
 
         <TextView
             android:id="@+id/post_time_tv"
-            android:textColor="#7f7f7f"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/post_title_tv"
-            android:layout_toEndOf="@id/post_subreddit_tv"
             android:layout_marginTop="4dp"
+            android:layout_toEndOf="@id/post_subreddit_tv"
+            android:textColor="@color/colorTextSecondary"
             android:textSize="12sp"
             tools:text="@string/tools_time" />
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/post_upvote_count_tv"
-        android:textColor="@android:color/black"
+    <FrameLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        tools:text="@string/tools_score" />
+        android:layout_weight="1">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:contentDescription="@string/a11y_score_icon"
+            android:src="@drawable/arrow_up_icon" />
+
+        <TextView
+            android:id="@+id/post_score_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@android:color/black"
+            tools:text="@string/tools_score" />
+    </FrameLayout>
 
 </LinearLayout>

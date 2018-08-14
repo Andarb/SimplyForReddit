@@ -12,151 +12,176 @@
         android:background="?attr/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <ScrollView
-        android:layout_width="match_parent"
+    <android.support.v7.widget.CardView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/post_toolbar">
+        android:layout_below="@id/post_toolbar"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp">
 
-        <android.support.constraint.ConstraintLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp">
+            android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/post_time_and_author_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="@string/tools_time_and_author" />
-
-            <TextView
-                android:id="@+id/post_title_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                app:layout_constraintStart_toStartOf="@+id/post_time_and_author_tv"
-                app:layout_constraintTop_toBottomOf="@+id/post_time_and_author_tv"
-                tools:text="@string/tools_title" />
-
-            <TextView
-                android:id="@+id/post_url_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:ellipsize="end"
-                android:maxEms="10"
-                android:maxLines="1"
-                android:textColor="@color/colorHyperlink"
-                app:layout_constraintStart_toStartOf="@+id/post_title_tv"
-                app:layout_constraintTop_toBottomOf="@+id/post_title_tv"
-                tools:text="@string/tools_title" />
-
-            <TextView
-                android:id="@+id/post_body_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:visibility="gone"
-                app:layout_constraintStart_toStartOf="@+id/post_url_tv"
-                app:layout_constraintTop_toBottomOf="@+id/post_url_tv"
-                tools:text="@string/tools_body" />
-
-            <TextView
-                android:id="@+id/post_upvote_count_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="@+id/post_url_tv"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/post_time_and_author_tv"
-                tools:text="@string/tools_score" />
-
-            <ImageView
-                android:id="@+id/post_image_iv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:adjustViewBounds="true"
-                android:contentDescription="@string/a11y_image"
-                android:scaleType="fitCenter"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/post_url_tv" />
-
-            <ImageView
-                android:id="@+id/image_placeholder_iv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/a11y_placeholder"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/post_image_iv"
-                app:layout_constraintEnd_toEndOf="@+id/post_image_iv"
-                app:layout_constraintStart_toStartOf="@+id/post_image_iv"
-                app:layout_constraintTop_toTopOf="@+id/post_image_iv" />
-
-            <ImageView
-                android:id="@+id/play_icon_iv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/a11y_play_icon"
-                android:src="@drawable/play_icon_white_48"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/post_image_iv"
-                app:layout_constraintEnd_toEndOf="@+id/post_image_iv"
-                app:layout_constraintStart_toStartOf="@+id/post_image_iv"
-                app:layout_constraintTop_toTopOf="@+id/post_image_iv" />
-
-            <TextView
-                android:id="@+id/comments_label_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:text="@string/comments_label"
-                android:textSize="18sp"
-                app:layout_constraintTop_toBottomOf="@+id/post_image_iv" />
-
-            <Button
-                android:id="@+id/see_all_button_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:drawablePadding="4dp"
-                android:drawableStart="@drawable/browser_icon_black_18"
-                android:minHeight="0dp"
-                android:minWidth="0dp"
-                android:padding="0dp"
-                android:text="@string/see_all_button"
-                app:layout_constraintBottom_toBottomOf="@id/comments_label_tv"
-                app:layout_constraintEnd_toEndOf="parent" />
-
-            <View
-                android:id="@+id/divider_line"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="4dp"
-                android:background="@android:color/darker_gray"
-                app:layout_constraintTop_toBottomOf="@+id/comments_label_tv" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/comments_recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@+id/divider_line" />
-
-
-            <ProgressBar
-                android:id="@+id/post_details_pb"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:orientation="vertical">
 
-        </android.support.constraint.ConstraintLayout>
-    </ScrollView>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#edeff1"
+                    android:padding="8dp">
+
+                    <TextView
+                        android:id="@+id/post_author_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorTextSecondary"
+                        android:textSize="12sp"
+                        tools:text="@string/tools_time_and_author" />
+
+                    <TextView
+                        android:id="@+id/post_time_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/post_author_tv"
+                        android:textColor="@color/colorTextSecondary"
+                        android:textSize="12sp"
+                        tools:text="@string/tools_time_and_author" />
+
+                    <TextView
+                        android:id="@+id/post_score_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:textColor="@color/colorTextSecondary"
+                        android:textSize="14sp"
+                        tools:text="@string/tools_score" />
+
+                    <TextView
+                        android:id="@+id/post_url_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/post_author_tv"
+                        android:ellipsize="end"
+                        android:maxEms="10"
+                        android:maxLines="1"
+                        android:textColor="@color/colorHyperlink"
+                        android:textSize="12sp"
+                        tools:text="@string/tools_url" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/post_title_tv"
+                    android:layout_marginStart="@dimen/cardview_margin"
+                    android:layout_marginEnd="@dimen/cardview_margin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:textColor="@color/colorTextPrimary"
+                    android:textSize="16sp"
+                    tools:text="@string/tools_title" />
+
+                <TextView
+                    android:id="@+id/post_body_tv"
+                    android:layout_marginStart="@dimen/cardview_margin"
+                    android:layout_marginEnd="@dimen/cardview_margin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textColor="@color/colorTextPrimary"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    tools:text="@string/tools_body" />
+
+                <ImageView
+                    android:id="@+id/post_image_iv"
+                    android:layout_marginStart="@dimen/cardview_margin"
+                    android:layout_marginEnd="@dimen/cardview_margin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16sp"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@string/a11y_image"
+                    android:scaleType="fitCenter"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+                <ImageView
+                    android:id="@+id/image_placeholder_iv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/a11y_placeholder"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/play_icon_iv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/a11y_play_icon"
+                    android:src="@drawable/play_icon_white_48"
+                    android:visibility="gone" />
+
+                <View
+                    android:id="@+id/divider_line"
+                    android:layout_marginStart="@dimen/cardview_margin"
+                    android:layout_marginEnd="@dimen/cardview_margin"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="32dp"
+                    android:background="@android:color/darker_gray" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_marginStart="@dimen/cardview_margin"
+                        android:id="@+id/comments_label_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:text="@string/comments_label"
+                        android:textSize="18sp" />
+
+                    <Button
+                        android:layout_marginEnd="@dimen/cardview_margin"
+                        android:id="@+id/see_all_button_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end|center_vertical"
+                        android:background="@android:color/transparent"
+                        android:drawablePadding="4dp"
+                        android:drawableStart="@drawable/browser_icon_black_18"
+                        android:minHeight="0dp"
+                        android:minWidth="0dp"
+                        android:padding="0dp"
+                        android:text="@string/see_all_button" />
+
+                </FrameLayout>
+
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/comments_recycler_view"
+                    android:layout_marginStart="@dimen/cardview_margin"
+                    android:layout_marginEnd="@dimen/cardview_margin"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="8dp" />
+
+
+                <ProgressBar
+                    android:id="@+id/post_details_pb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+        </ScrollView>
+
+    </android.support.v7.widget.CardView>
 </RelativeLayout>
 

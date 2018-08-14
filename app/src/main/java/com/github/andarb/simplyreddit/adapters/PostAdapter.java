@@ -47,7 +47,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         TextView mPostTitleTV;
         @BindView(R.id.post_subreddit_tv)
         TextView mPostSubredditTV;
-        @BindView(R.id.post_upvote_count_tv)
+        @BindView(R.id.post_score_tv)
         TextView mPostScoreTV;
         @BindView(R.id.post_time_tv)
         TextView mPostTimeTV;

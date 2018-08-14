@@ -136,9 +136,9 @@ public class PostDeserializer implements JsonDeserializer<RedditPosts> {
 
         DecimalFormat df = new DecimalFormat("#.#");
 
-        if (score / 1000000 > 1) {
+        if (score / 1000000 >= 1) {
             return df.format(score / 1000000.0) + "M";
-        } else if (score / 1000 > 1) {
+        } else if (score / 1000 >= 1) {
             return df.format(score / 1000.0) + "k";
         }
 

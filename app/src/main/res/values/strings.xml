@@ -27,10 +27,11 @@
     <string name="a11y_play_icon">Video play icon</string>
     <string name="a11y_placeholder">Image loading animation</string>
     <string name="a11y_share_fab">Share link button</string>
+    <string name="a11y_score_icon">Post score icon</string>
 
     <!-- Prefixes for subreddits, usernames and creation time -->
     <string name="prefix_subreddit" translatable="false">r/%1$s</string>
-    <string name="prefix_user_time">by u/%1$s %2$s</string>
+    <string name="prefix_user">Posted by u/%1$s</string>
     <string name="prefix_time">\u0020- %1$s</string>
 
     <!-- Properties for an ad banner -->
@@ -45,6 +46,7 @@
     <string name="tools_score">1265</string>
     <string name="tools_comment_time">2 hours ago</string>
     <string name="tools_comment_author">Madeline_Albright6</string>
+    <string name="tools_url">i.imgur.com/tKdsaEd.jpg</string>
     <string name="tools_body">There is mass transfer from Earth to Mars due to asteroid
         impacts. We could find life that has been there for billions of years and we still couldn't
         be sure it didn't come form Earth originally.</string>

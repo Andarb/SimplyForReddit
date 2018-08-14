@@ -61,10 +61,12 @@ public class PostActivity extends AppCompatActivity {
     TextView mUrlTV;
     @BindView(R.id.post_body_tv)
     TextView mBodyTV;
-    @BindView(R.id.post_upvote_count_tv)
+    @BindView(R.id.post_score_tv)
     TextView mScoreTV;
-    @BindView(R.id.post_time_and_author_tv)
-    TextView mTimeAuthorTV;
+    @BindView(R.id.post_author_tv)
+    TextView mAuthorTV;
+    @BindView(R.id.post_time_tv)
+    TextView mTimeTV;
     @BindView(R.id.see_all_button_tv)
     Button mSeeAllButton;
     @BindView(R.id.comments_recycler_view)
@@ -147,7 +149,8 @@ public class PostActivity extends AppCompatActivity {
 
                     // Populate TextViews
                     mTitleTV.setText(title);
-                    mTimeAuthorTV.setText(getString(R.string.prefix_user_time, author, time));
+                    mAuthorTV.setText(getString(R.string.prefix_user, author));
+                    mTimeTV.setText(getString(R.string.prefix_time, time));
                     mScoreTV.setText(score);
                     mUrlTV.setText(parseLink(sourceUrl));
                     mUrlTV.setPaintFlags(mUrlTV.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
