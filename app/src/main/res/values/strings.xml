@@ -15,8 +15,8 @@
     <string name="widget_label">Hot posts</string>
     <string name="widget_empty_list">No posts found</string>
 
-    <!-- Label for a list of comments -->
-    <string name="comments_label">Comments</string>
+    <!-- Text displayed when no comments were found -->
+    <string name="comments_empty">No comments.</string>
 
     <!-- Text for a button that shows all of the comments -->
     <string name="see_all_button">See all</string>
@@ -31,12 +31,8 @@
 
     <!-- Prefixes for subreddits, usernames and creation time -->
     <string name="prefix_subreddit" translatable="false">r/%1$s</string>
-    <string name="prefix_user">Posted by u/%1$s</string>
+    <string name="prefix_user">Posted by <i>u/%1$s</i></string>
     <string name="prefix_time">\u0020- %1$s</string>
-
-    <!-- Properties for an ad banner -->
-    <string name="adunit_size" translatable="false">BANNER</string>
-    <string name="adunit_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
 
     <!-- Tools text used for development purposes only -->
     <string name="tools_title">Ice cave in Iceland during sunset</string>

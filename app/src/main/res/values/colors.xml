@@ -7,5 +7,7 @@
     <color name="colorHyperlink">#0079D3</color>
     <color name="colorTextPrimary">#000000</color>
     <color name="colorTextSecondary">#7F7F7F</color>
+    <color name="colorPostHeaderBackground">#EDEFF1</color>
+
 
 </resources>

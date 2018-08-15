@@ -12,10 +12,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -69,14 +71,18 @@ public class PostActivity extends AppCompatActivity {
     TextView mTimeTV;
     @BindView(R.id.see_all_button_tv)
     Button mSeeAllButton;
-    @BindView(R.id.comments_recycler_view)
+    @BindView(R.id.comments_rv)
     RecyclerView mRecyclerView;
+    @BindView(R.id.no_comments_tv)
+    TextView mNoCommentsTV;
     @BindView(R.id.post_toolbar)
     Toolbar mToolbar;
     @BindView(R.id.post_details_pb)
     ProgressBar mProgressBar;
     @BindView(R.id.image_placeholder_iv)
     ImageView mPlaceholderIv;
+    @BindView(R.id.post_details_sv)
+    NestedScrollView mScrollView;
 
     private String mPostUrl;
     private AppDatabase mDb;
@@ -149,7 +155,7 @@ public class PostActivity extends AppCompatActivity {
 
                     // Populate TextViews
                     mTitleTV.setText(title);
-                    mAuthorTV.setText(getString(R.string.prefix_user, author));
+                    mAuthorTV.setText(Html.fromHtml(getString(R.string.prefix_user, author)));
                     mTimeTV.setText(getString(R.string.prefix_time, time));
                     mScoreTV.setText(score);
                     mUrlTV.setText(parseLink(sourceUrl));
@@ -250,8 +256,12 @@ public class PostActivity extends AppCompatActivity {
         commentsViewModel.getComments().observe(this, new Observer<List<Comment>>() {
             @Override
             public void onChanged(@Nullable List<Comment> comments) {
+                mNoCommentsTV.setVisibility(View.GONE);
                 mAdapter.setComments(comments);
                 mAdapter.notifyDataSetChanged();
+                if (mAdapter.getItemCount() == 0) {
+                    mNoCommentsTV.setVisibility(View.VISIBLE);
+                }
             }
         });
     }
@@ -342,6 +352,7 @@ public class PostActivity extends AppCompatActivity {
 
             if (action != null && action.equals(PostPullService.ACTION_BROADCAST)) {
                 if (extra != null && extra.equals(mPostUrl)) {
+                    mScrollView.setVisibility(View.VISIBLE);
                     mProgressBar.setVisibility(View.GONE);
                 }
             }

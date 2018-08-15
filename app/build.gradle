@@ -25,6 +25,15 @@ android {
             signingConfig signingConfigs.config
         }
     }
+    flavorDimensions "tier"
+    productFlavors{
+        free {
+            applicationId "com.github.andarb.simplyreddit.free"
+        }
+        paid {
+            applicationId "com.github.andarb.simplyreddit.paid"
+        }
+    }
 }
 
 dependencies {
@@ -51,6 +60,6 @@ dependencies {
     implementation 'android.arch.lifecycle:extensions:1.1.1'
 
     implementation 'com.google.firebase:firebase-core:16.0.1'
-    implementation 'com.google.android.gms:play-services-ads:15.0.1'
+    freeImplementation 'com.google.android.gms:play-services-ads:15.0.1'
     apply plugin: 'com.google.gms.google-services'
 }

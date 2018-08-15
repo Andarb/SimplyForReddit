@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/post_toolbar"
@@ -13,26 +13,26 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <android.support.v7.widget.CardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/post_toolbar"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="8dp">
 
-        <ScrollView
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/post_details_sv"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:orientation="vertical">
 
+                <!-- Post header contains username, creation time and score -->
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#edeff1"
+                    android:background="@color/colorPostHeaderBackground"
                     android:padding="8dp">
 
                     <TextView
@@ -75,113 +75,124 @@
                         tools:text="@string/tools_url" />
                 </RelativeLayout>
 
+
+                <!-- Post title and, when applicable, additional body text -->
                 <TextView
                     android:id="@+id/post_title_tv"
-                    android:layout_marginStart="@dimen/cardview_margin"
-                    android:layout_marginEnd="@dimen/cardview_margin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="@dimen/cardview_margin"
+                    android:layout_marginStart="@dimen/cardview_margin"
+                    android:layout_marginTop="8dp"
                     android:textColor="@color/colorTextPrimary"
                     android:textSize="16sp"
                     tools:text="@string/tools_title" />
 
                 <TextView
                     android:id="@+id/post_body_tv"
-                    android:layout_marginStart="@dimen/cardview_margin"
-                    android:layout_marginEnd="@dimen/cardview_margin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/cardview_margin"
+                    android:layout_marginStart="@dimen/cardview_margin"
                     android:layout_marginTop="8dp"
                     android:textColor="@color/colorTextPrimary"
                     android:textSize="14sp"
                     android:visibility="gone"
                     tools:text="@string/tools_body" />
 
-                <ImageView
-                    android:id="@+id/post_image_iv"
-                    android:layout_marginStart="@dimen/cardview_margin"
-                    android:layout_marginEnd="@dimen/cardview_margin"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16sp"
-                    android:adjustViewBounds="true"
-                    android:contentDescription="@string/a11y_image"
-                    android:scaleType="fitCenter"
-                    app:layout_constraintEnd_toEndOf="parent" />
 
-                <ImageView
-                    android:id="@+id/image_placeholder_iv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="@string/a11y_placeholder"
-                    android:visibility="gone" />
-
-                <ImageView
-                    android:id="@+id/play_icon_iv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="@string/a11y_play_icon"
-                    android:src="@drawable/play_icon_white_48"
-                    android:visibility="gone" />
-
-                <View
-                    android:id="@+id/divider_line"
-                    android:layout_marginStart="@dimen/cardview_margin"
-                    android:layout_marginEnd="@dimen/cardview_margin"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="32dp"
-                    android:background="@android:color/darker_gray" />
-
+                <!-- Post main image (when available) -->
                 <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp">
 
-                    <TextView
-                        android:layout_marginStart="@dimen/cardview_margin"
-                        android:id="@+id/comments_label_tv"
+                    <!-- Image -->
+                    <ImageView
+                        android:id="@+id/post_image_iv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="start"
-                        android:text="@string/comments_label"
-                        android:textSize="18sp" />
-
-                    <Button
+                        android:layout_gravity="center"
                         android:layout_marginEnd="@dimen/cardview_margin"
-                        android:id="@+id/see_all_button_tv"
+                        android:layout_marginStart="@dimen/cardview_margin"
+                        android:adjustViewBounds="true"
+                        android:contentDescription="@string/a11y_image"
+                        android:scaleType="fitCenter" />
+
+                    <!-- Loading animation when downloading the image -->
+                    <ImageView
+                        android:id="@+id/image_placeholder_iv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="end|center_vertical"
-                        android:background="@android:color/transparent"
-                        android:drawablePadding="4dp"
-                        android:drawableStart="@drawable/browser_icon_black_18"
-                        android:minHeight="0dp"
-                        android:minWidth="0dp"
-                        android:padding="0dp"
-                        android:text="@string/see_all_button" />
+                        android:layout_gravity="center"
+                        android:contentDescription="@string/a11y_placeholder"
+                        android:visibility="gone" />
 
+                    <!-- Play icon displayed on top of the preview image of a video -->
+                    <ImageView
+                        android:id="@+id/play_icon_iv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:contentDescription="@string/a11y_play_icon"
+                        android:src="@drawable/play_icon_white_48"
+                        android:visibility="gone" />
                 </FrameLayout>
 
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/comments_recycler_view"
-                    android:layout_marginStart="@dimen/cardview_margin"
-                    android:layout_marginEnd="@dimen/cardview_margin"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="8dp" />
-
-
-                <ProgressBar
-                    android:id="@+id/post_details_pb"
+                <!-- Button to display all comments -->
+                <Button
+                    android:id="@+id/see_all_button_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:visibility="gone" />
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="@dimen/cardview_margin"
+                    android:layout_marginTop="32dp"
+                    android:background="@android:color/transparent"
+                    android:drawablePadding="4dp"
+                    android:drawableStart="@drawable/browser_icon_black_18"
+                    android:minHeight="0dp"
+                    android:minWidth="0dp"
+                    android:padding="0dp"
+                    android:text="@string/see_all_button" />
+
+                <View
+                    android:id="@+id/divider_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginEnd="@dimen/cardview_margin"
+                    android:layout_marginStart="@dimen/cardview_margin"
+                    android:layout_marginTop="4dp"
+                    android:background="@android:color/darker_gray" />
+
+                <!-- Post comments -->
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/comments_rv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/cardview_margin"
+                    android:layout_marginStart="@dimen/cardview_margin" />
+
+                <TextView
+                    android:id="@+id/no_comments_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp"
+                    android:visibility="gone"
+                    android:text="@string/comments_empty" />
 
             </LinearLayout>
-        </ScrollView>
+        </android.support.v4.widget.NestedScrollView>
+
+        <ProgressBar
+            android:id="@+id/post_details_pb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
 
     </android.support.v7.widget.CardView>
-</RelativeLayout>
+</LinearLayout>
 
