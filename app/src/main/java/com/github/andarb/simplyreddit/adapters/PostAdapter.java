@@ -117,10 +117,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         if (thumbnailUrl != null && !thumbnailUrl.isEmpty() && thumbnailUrl.contains("http")) {
             Glide.with(mContext)
                     .load(thumbnailUrl)
-                    .apply(new RequestOptions().error(R.drawable.broken_image_black_48))
+                    .apply(new RequestOptions().error(R.drawable.broken_image_48))
                     .into(holder.mThumbnailIV);
         } else {
-            holder.mThumbnailIV.setImageResource(R.drawable.text_icon_black_48);
+            holder.mThumbnailIV.setImageResource(R.drawable.text_icon_48);
         }
         holder.mPostTitleTV.setText(title);
         holder.mPostSubredditTV.setText(mContext.getString(R.string.prefix_subreddit, subreddit));

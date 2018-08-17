@@ -4,12 +4,12 @@
 
     <item
         android:id="@+id/action_share"
-        android:icon="@drawable/share_icon_white_24"
+        android:icon="@drawable/share_icon_24"
         android:title="@string/action_share"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_refresh"
-        android:icon="@drawable/refresh_icon_white_24"
+        android:icon="@drawable/refresh_icon_24"
         android:title="@string/action_refresh"
         app:showAsAction="always" />
 

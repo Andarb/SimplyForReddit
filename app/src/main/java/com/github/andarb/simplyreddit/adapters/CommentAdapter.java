@@ -60,7 +60,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
                 System.currentTimeMillis(), 0).toString();
 
         holder.mBodyTV.setText(body);
-        holder.mAuthorTV.setText(author);
+        holder.mAuthorTV.setText(mContext.getString(R.string.prefix_user_short, author));
         holder.mScoreTV.setText(String.valueOf(score));
         holder.mTimeTv.setText(time);
     }

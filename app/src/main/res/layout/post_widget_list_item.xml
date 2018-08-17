@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/list_item_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="8dp"
-    android:layout_marginBottom="8dp"
-    android:orientation="vertical"
-    android:id="@+id/list_item_layout">
+    android:layout_marginBottom="12dp"
+    android:layout_marginTop="12dp"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/widget_title_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:maxLines="1"
         android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/colorTextPrimary"
         tools:text="@string/tools_title" />
 
     <RelativeLayout
@@ -24,14 +25,16 @@
             android:id="@+id/widget_subreddit_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/colorTextSecondary"
             android:textSize="12sp"
             tools:text="@string/tools_subreddit" />
 
         <TextView
             android:id="@+id/widget_time_tv"
-            android:layout_alignParentEnd="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:textColor="@color/colorTextSecondary"
             android:textSize="12sp"
             tools:text="@string/tools_comment_time" />
     </RelativeLayout>

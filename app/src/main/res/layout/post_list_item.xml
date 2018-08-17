@@ -55,6 +55,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/post_title_tv"
             android:layout_marginTop="4dp"
+            android:layout_marginStart="4dp"
             android:layout_toEndOf="@id/post_subreddit_tv"
             android:textColor="@color/colorTextSecondary"
             android:textSize="12sp"
@@ -71,7 +72,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:contentDescription="@string/a11y_score_icon"
-            android:src="@drawable/arrow_up_icon" />
+            android:src="@drawable/arrow_up_icon_48" />
 
         <TextView
             android:id="@+id/post_score_tv"

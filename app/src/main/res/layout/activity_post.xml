@@ -47,6 +47,7 @@
                         android:id="@+id/post_time_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
                         android:layout_toEndOf="@id/post_author_tv"
                         android:textColor="@color/colorTextSecondary"
                         android:textSize="12sp"
@@ -135,26 +136,9 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:contentDescription="@string/a11y_play_icon"
-                        android:src="@drawable/play_icon_white_48"
+                        android:src="@drawable/play_icon_48"
                         android:visibility="gone" />
                 </FrameLayout>
-
-
-                <!-- Button to display all comments -->
-                <Button
-                    android:id="@+id/see_all_button_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layout_marginEnd="@dimen/cardview_margin"
-                    android:layout_marginTop="32dp"
-                    android:background="@android:color/transparent"
-                    android:drawablePadding="4dp"
-                    android:drawableStart="@drawable/browser_icon_black_18"
-                    android:minHeight="0dp"
-                    android:minWidth="0dp"
-                    android:padding="0dp"
-                    android:text="@string/see_all_button" />
 
                 <View
                     android:id="@+id/divider_line"
@@ -162,26 +146,52 @@
                     android:layout_height="1dp"
                     android:layout_marginEnd="@dimen/cardview_margin"
                     android:layout_marginStart="@dimen/cardview_margin"
-                    android:layout_marginTop="4dp"
-                    android:background="@android:color/darker_gray" />
+                    android:layout_marginTop="32dp"
+                    android:background="@color/colorPrimaryDark" />
 
-                <!-- Post comments -->
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/comments_rv"
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/cardview_margin"
-                    android:layout_marginStart="@dimen/cardview_margin" />
+                    android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/no_comments_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginTop="8dp"
-                    android:visibility="gone"
-                    android:text="@string/comments_empty" />
+                    <!-- Post comments -->
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/comments_rv"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginEnd="@dimen/cardview_margin"
+                        android:layout_marginStart="@dimen/cardview_margin"
+                        android:layout_marginTop="8dp" />
+
+                    <!-- Empty comments list -->
+                    <TextView
+                        android:id="@+id/no_comments_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/comments_empty"
+                        android:visibility="gone" />
+
+                    <!-- Button to display all comments -->
+                    <Button
+                        android:id="@+id/see_all_button_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:textColor="@color/colorAccent"
+                        android:drawableTint="@color/colorAccent"
+                        android:layout_marginEnd="@dimen/cardview_margin"
+                        android:layout_marginTop="8dp"
+                        android:background="@android:color/transparent"
+                        android:drawablePadding="4dp"
+                        android:drawableStart="@drawable/browser_icon_18"
+                        android:minHeight="0dp"
+                        android:minWidth="0dp"
+                        android:padding="0dp"
+                        android:text="@string/see_all_button" />
+                </FrameLayout>
 
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>

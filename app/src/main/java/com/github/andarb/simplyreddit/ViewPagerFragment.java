@@ -125,7 +125,7 @@ public class ViewPagerFragment extends Fragment {
         mAdapter = new PostAdapter(mContext);
         mRecyclerView.setLayoutManager(
                 new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
-        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setHasFixedSize(false);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(mContext,
                 DividerItemDecoration.VERTICAL));
         mRecyclerView.setAdapter(mAdapter);

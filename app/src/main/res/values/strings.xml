@@ -12,7 +12,7 @@
     <string name="refresh_toast">Refreshing list</string>
 
     <!-- Text and labels used in the widget -->
-    <string name="widget_label">Hot posts</string>
+    <string name="widget_label">Hot on Reddit</string>
     <string name="widget_empty_list">No posts found</string>
 
     <!-- Text displayed when no comments were found -->
@@ -31,8 +31,9 @@
 
     <!-- Prefixes for subreddits, usernames and creation time -->
     <string name="prefix_subreddit" translatable="false">r/%1$s</string>
-    <string name="prefix_user">Posted by <i>u/%1$s</i></string>
-    <string name="prefix_time">\u0020- %1$s</string>
+    <string name="prefix_user">Posted by u/%1$s</string>
+    <string name="prefix_user_short" translatable="false">u/%1$s</string>
+    <string name="prefix_time" translatable="false">- %1$s</string>
 
     <!-- Tools text used for development purposes only -->
     <string name="tools_title">Ice cave in Iceland during sunset</string>

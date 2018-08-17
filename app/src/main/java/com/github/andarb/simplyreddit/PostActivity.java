@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -121,6 +122,8 @@ public class PostActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false));
         mRecyclerView.setHasFixedSize(false);
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(this,
+                DividerItemDecoration.VERTICAL));
         mRecyclerView.setAdapter(mAdapter);
 
         setupViewModels();
@@ -183,7 +186,7 @@ public class PostActivity extends AppCompatActivity {
                     // Load the media preview
                     Glide.with(PostActivity.this)
                             .load(url)
-                            .apply(new RequestOptions().error(R.drawable.broken_image_black_48))
+                            .apply(new RequestOptions().error(R.drawable.broken_image_48))
                             .listener(new RequestListener<Drawable>() {
                                 @Override
                                 public boolean onLoadFailed(
@@ -257,10 +260,12 @@ public class PostActivity extends AppCompatActivity {
             @Override
             public void onChanged(@Nullable List<Comment> comments) {
                 mNoCommentsTV.setVisibility(View.GONE);
+                mSeeAllButton.setVisibility(View.VISIBLE);
                 mAdapter.setComments(comments);
                 mAdapter.notifyDataSetChanged();
                 if (mAdapter.getItemCount() == 0) {
                     mNoCommentsTV.setVisibility(View.VISIBLE);
+                    mSeeAllButton.setVisibility(View.GONE);
                 }
             }
         });
@@ -307,7 +312,11 @@ public class PostActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(mStatusReceiver, intentFilter);
 
         // On configuration change retrieve posts from ViewModel instead of making a network call
-        if (mIsNewActivity) refreshpost();
+        if (mIsNewActivity) {
+            refreshpost();
+        } else {
+            mScrollView.setVisibility(View.VISIBLE);
+        }
     }
 
 
