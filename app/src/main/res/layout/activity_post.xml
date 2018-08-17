@@ -160,8 +160,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="16dp"
                         android:layout_marginEnd="@dimen/cardview_margin"
-                        android:layout_marginStart="@dimen/cardview_margin"
-                        android:layout_marginTop="8dp" />
+                        android:layout_marginStart="@dimen/cardview_margin" />
 
                     <!-- Empty comments list -->
                     <TextView
@@ -173,25 +172,25 @@
                         android:layout_marginTop="8dp"
                         android:text="@string/comments_empty"
                         android:visibility="gone" />
-
-                    <!-- Button to display all comments -->
-                    <Button
-                        android:id="@+id/see_all_button_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end"
-                        android:textColor="@color/colorAccent"
-                        android:drawableTint="@color/colorAccent"
-                        android:layout_marginEnd="@dimen/cardview_margin"
-                        android:layout_marginTop="8dp"
-                        android:background="@android:color/transparent"
-                        android:drawablePadding="4dp"
-                        android:drawableStart="@drawable/browser_icon_18"
-                        android:minHeight="0dp"
-                        android:minWidth="0dp"
-                        android:padding="0dp"
-                        android:text="@string/see_all_button" />
                 </FrameLayout>
+
+                <!-- Button to display all comments -->
+                <Button
+                    android:id="@+id/see_all_button_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:textColor="@color/colorAccent"
+                    android:drawableTint="@color/colorAccent"
+                    android:layout_marginEnd="@dimen/cardview_margin"
+                    android:layout_marginBottom="16dp"
+                    android:background="@android:color/transparent"
+                    android:drawablePadding="4dp"
+                    android:drawableStart="@drawable/browser_icon_18"
+                    android:minHeight="0dp"
+                    android:minWidth="0dp"
+                    android:padding="0dp"
+                    android:text="@string/see_all_button" />
 
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>

@@ -85,13 +85,13 @@ class PostRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         String title = mPosts.get(position).getTitle();
         String time = DateUtils.getRelativeTimeSpanString(mPosts.get(position).getCreated(),
                 System.currentTimeMillis(), 0, DateUtils.FORMAT_ABBREV_RELATIVE).toString();
-        String subreddit = mContext.getString(R.string.prefix_subreddit,
-                mPosts.get(position).getSubreddit());
+        String subreddit = mPosts.get(position).getSubreddit();
 
         // Populate list
         RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.post_widget_list_item);
         rv.setTextViewText(R.id.widget_title_tv, title);
-        rv.setTextViewText(R.id.widget_subreddit_tv, subreddit);
+        rv.setTextViewText(R.id.widget_subreddit_tv, mContext.getString(R.string.prefix_subreddit,
+                subreddit));
         rv.setTextViewText(R.id.widget_time_tv, time);
 
         // Set up extras for list item click events
