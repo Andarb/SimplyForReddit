@@ -1,6 +1,28 @@
 <resources>
     <string name="app_name">Simply Reddit</string>
 
+    <!-- Toast that appears when the refresh icon in the widget is clicked -->
+    <string name="refresh_toast">Refreshing list</string>
+
+    <!-- Snackbar action to refresh page -->
+    <string name="snackbar_retry">Try again</string>
+
+    <!-- Text for a button that shows all of the comments -->
+    <string name="see_all_button">See all</string>
+
+    <!-- Text displayed when no comments were found -->
+    <string name="comments_empty">No comments.</string>
+
+    <!-- Text and labels used in the widget -->
+    <string name="widget_label">Hot on Reddit</string>
+    <string name="widget_empty_list">No posts found.</string>
+
+    <!-- Status messages for retrieving posts or comments -->
+    <string name="status_no_internet">No internet connection</string>
+    <string name="status_no_posts">Unable to retrieve posts</string>
+    <string name="status_no_comments">Unable to retrieve comments</string>
+    <string name="status_server_error">Unable to reach server</string>
+
     <!-- Menu items -->
     <string name="action_refresh">Refresh</string>
     <string name="action_share">Share</string>
@@ -8,18 +30,11 @@
     <!-- Share a URL of a reddit post when the share action is clicked -->
     <string name="share_format">Hey! Check this Reddit post out:\n%1$s</string>
 
-    <!-- Toast that appears when the refresh icon in the widget is clicked -->
-    <string name="refresh_toast">Refreshing list</string>
-
-    <!-- Text and labels used in the widget -->
-    <string name="widget_label">Hot on Reddit</string>
-    <string name="widget_empty_list">No posts found</string>
-
-    <!-- Text displayed when no comments were found -->
-    <string name="comments_empty">No comments.</string>
-
-    <!-- Text for a button that shows all of the comments -->
-    <string name="see_all_button">See all</string>
+    <!-- Prefixes for subreddits, usernames and creation time -->
+    <string name="prefix_subreddit" translatable="false">r/%1$s</string>
+    <string name="prefix_user">Posted by u/%1$s</string>
+    <string name="prefix_user_short" translatable="false">u/%1$s</string>
+    <string name="prefix_time" translatable="false">- %1$s</string>
 
     <!-- Content descriptions for accessibility -->
     <string name="a11y_thumbnail">Post thumbnail</string>
@@ -28,12 +43,6 @@
     <string name="a11y_placeholder">Image loading animation</string>
     <string name="a11y_share_fab">Share link button</string>
     <string name="a11y_score_icon">Post score icon</string>
-
-    <!-- Prefixes for subreddits, usernames and creation time -->
-    <string name="prefix_subreddit" translatable="false">r/%1$s</string>
-    <string name="prefix_user">Posted by u/%1$s</string>
-    <string name="prefix_user_short" translatable="false">u/%1$s</string>
-    <string name="prefix_time" translatable="false">- %1$s</string>
 
     <!-- Tools text used for development purposes only -->
     <string name="tools_title">Ice cave in Iceland during sunset</string>

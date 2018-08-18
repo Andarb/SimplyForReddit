@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
@@ -44,6 +45,7 @@ import com.github.andarb.simplyreddit.models.PostsViewModel;
 import com.github.andarb.simplyreddit.models.PostsViewModelFactory;
 import com.github.andarb.simplyreddit.utils.PostPullService;
 import com.github.andarb.simplyreddit.utils.RetrofitClient;
+import com.github.andarb.simplyreddit.widget.PostWidgetProvider;
 
 import java.util.List;
 
@@ -111,11 +113,18 @@ public class PostActivity extends AppCompatActivity {
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // This will help us prevent unnecessary network calls when going back in the stack
-                finish();
+                boolean startedFromWidget = getIntent().getBooleanExtra(
+                        PostWidgetProvider.EXTRA_WIDGET_START, false);
+
+                // Open home activity if started from widget, otherwise go back in the stack
+                if (startedFromWidget) {
+                    Intent intent = new Intent(PostActivity.this, MainActivity.class);
+                    startActivity(intent);
+                } else {
+                    finish();
+                }
             }
         });
-
 
         // Setup recyclerview adapter for comments
         mAdapter = new CommentAdapter(this);
@@ -203,7 +212,7 @@ public class PostActivity extends AppCompatActivity {
                                     mPlaceholderIv.setVisibility(View.GONE);
 
                                     // If this is a video, display a play icon on top of the
-                                    // he preview image, and add tint
+                                    // preview image, and add tint
                                     if (isVideo) {
                                         mImageIV.setColorFilter(
                                                 getResources().getColor(R.color.colorImageTint));
@@ -358,11 +367,28 @@ public class PostActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             String extra = intent.getStringExtra(PostPullService.EXTRA_BROADCAST);
+            String status = intent.getStringExtra(PostPullService.EXTRA_STATUS);
 
             if (action != null && action.equals(PostPullService.ACTION_BROADCAST)) {
                 if (extra != null && extra.equals(mPostUrl)) {
                     mScrollView.setVisibility(View.VISIBLE);
                     mProgressBar.setVisibility(View.GONE);
+
+                    // If there was an error, show a snackbar
+                    if (!status.equals(PostPullService.STATUS_SUCCESS)) {
+                        Snackbar snackbar = Snackbar.make(mScrollView, status,
+                                Snackbar.LENGTH_LONG);
+
+                        snackbar.setAction(getString(R.string.snackbar_retry),
+                                new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        refreshpost();
+                                    }
+                                });
+
+                        snackbar.show();
+                    }
                 }
             }
         }

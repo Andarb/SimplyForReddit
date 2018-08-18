@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -195,11 +196,25 @@ public class SubredditActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             String extra = intent.getStringExtra(PostPullService.EXTRA_BROADCAST);
+            String status = intent.getStringExtra(PostPullService.EXTRA_STATUS);
 
             if (action != null && action.equals(PostPullService.ACTION_BROADCAST)) {
                 if (extra != null && extra.equals(mSubreddit)) {
                     mIsLoading = false;
                     mProgressBar.setVisibility(View.GONE);
+
+                    // If there was an error, show a snackbar
+                    if (!status.equals(PostPullService.STATUS_SUCCESS)) {
+                        Snackbar snackbar = Snackbar.make(mRecyclerView, status,
+                                Snackbar.LENGTH_LONG);
+                        snackbar.setAction("Try again", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                refreshList();
+                            }
+                        });
+                        snackbar.show();
+                    }
                 }
             }
         }

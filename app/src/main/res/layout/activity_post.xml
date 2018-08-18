@@ -147,7 +147,7 @@
                     android:layout_marginEnd="@dimen/cardview_margin"
                     android:layout_marginStart="@dimen/cardview_margin"
                     android:layout_marginTop="32dp"
-                    android:background="@color/colorPrimaryDark" />
+                    android:background="@color/colorPrimary" />
 
                 <FrameLayout
                     android:layout_width="match_parent"
@@ -181,7 +181,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:textColor="@color/colorAccent"
-                    android:drawableTint="@color/colorAccent"
+                    android:tint="@color/colorAccent"
                     android:layout_marginEnd="@dimen/cardview_margin"
                     android:layout_marginBottom="16dp"
                     android:background="@android:color/transparent"

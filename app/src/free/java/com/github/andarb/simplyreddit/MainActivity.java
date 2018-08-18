@@ -144,13 +144,14 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             String extra = intent.getStringExtra(PostPullService.EXTRA_BROADCAST);
+            String status = intent.getStringExtra(PostPullService.EXTRA_STATUS);
             int page = Arrays.asList(MainActivity.PAGES).indexOf(extra);
 
             if (action != null && action.equals(PostPullService.ACTION_BROADCAST) && page != -1) {
                 ViewPagerFragment pagerFragment = (ViewPagerFragment) mPager.getAdapter()
                         .instantiateItem(mPager, page);
 
-                pagerFragment.hideProgressBar();
+                pagerFragment.reportStatus(status);
             }
         }
     }

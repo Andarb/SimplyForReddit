@@ -28,6 +28,8 @@ public class PostWidgetProvider extends AppWidgetProvider {
             "com.github.andarb.simplyreddit.widget.EXTRA_POST";
     public static final String EXTRA_WIDGET_SUBREDDIT =
             "com.github.andarb.simplyreddit.widget.EXTRA_SUBREDDIT";
+    public static final String EXTRA_WIDGET_START =
+            "com.github.andarb.simplyreddit.widget.EXTRA_WIDGET_START";
 
     /* Start an activity to display clicked item's post details. Or, reload ListView items. */
     @Override
@@ -43,6 +45,7 @@ public class PostWidgetProvider extends AppWidgetProvider {
             Intent postActivityIntent = new Intent(context, PostActivity.class);
             postActivityIntent.putExtra(PostActivity.EXTRA_POST, post);
             postActivityIntent.putExtra(SubredditActivity.EXTRA_SUBREDDIT, subreddit);
+            postActivityIntent.putExtra(EXTRA_WIDGET_START, true);
 
             context.startActivity(postActivityIntent);
         } else if (action.equals(ACTION_REFRESH)) {
