@@ -18,6 +18,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ProgressBar;
 
 import com.github.andarb.simplyreddit.adapters.PostAdapter;
@@ -179,7 +181,13 @@ public class SubredditActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_refresh:
+                View refreshView = findViewById(R.id.action_refresh);
+                Animation rotate = AnimationUtils.loadAnimation(this,
+                        R.anim.rotate_clockwise);
+                refreshView.startAnimation(rotate);
+
                 refreshList();
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -5,13 +5,15 @@
     <color name="colorAccent">#448AFF</color>
 
     <color name="colorImageTint">#5F000000</color>
+    <color name="colorInactiveTabTint">#FFFFFF</color>
 
-    <color name="colorHyperlink">#0079D3</color>
     <color name="colorTextPrimary">#212121</color>
     <color name="colorTextSecondary">#757575</color>
+    <color name="colorTextWidgetTitle">#FFFFFF</color>
+    <color name="colorTextInactiveTab">#FFFFFF</color>
+    <color name="colorHyperlink">#0079D3</color>
 
-    <color name="colorWidgetBackground">#FFFFFF</color>
-    <color name="colorPostHeaderBackground">#EDEFF1</color>
-
-
+    <color name="colorWidgetBg">#FFFFFF</color>
+    <color name="colorPostHeaderBg">#EDEFF1</color>
+    <color name="colorActiveTabBg">#FAFAFA</color>
 </resources>

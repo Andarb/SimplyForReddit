@@ -20,7 +20,7 @@
             android:fontFamily="sans-serif-black"
             android:text="@string/widget_label"
             android:textAllCaps="true"
-            android:textColor="@android:color/white"
+            android:textColor="@color/colorTextWidgetTitle"
             android:textSize="16sp" />
 
         <ImageView

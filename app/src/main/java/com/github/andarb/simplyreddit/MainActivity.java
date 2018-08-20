@@ -6,20 +6,19 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
+import com.github.andarb.simplyreddit.adapters.PostPagerAdapter;
+import com.github.andarb.simplyreddit.utils.AdMob;
 import com.github.andarb.simplyreddit.utils.PostPullService;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 
 import java.util.Arrays;
 
@@ -31,36 +30,27 @@ public class MainActivity extends AppCompatActivity {
     // Reddit post categories
     public static final String[] PAGES = {"HOT", "TOP", "NEW"};
 
-    // App id used with admob for testing purposes only
-    private static final String ADMOB_ID = "ca-app-pub-3940256099942544~3347511713";
-
     @BindView(R.id.pager)
     ViewPager mPager;
     @BindView(R.id.tab_layout)
     TabLayout mTabLayout;
     @BindView(R.id.pager_toolbar)
     Toolbar mToolbar;
-    @BindView(R.id.admob_banner)
-    AdView mAdView;
 
     private StatusReceiver mStatusReceiver;
-    private boolean mIsNewActivity;
+    private PostPagerAdapter mPagerAdapter;
+    private boolean mIsNewActivity; // member that tracks if this is a newly created activity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        AdMob.initialize(this, findViewById(android.R.id.content));
 
         mIsNewActivity = true;
         setSupportActionBar(mToolbar);
-
-        // Initialize advertisement banner
-        MobileAds.initialize(this, ADMOB_ID);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
     }
-
 
     @Override
     protected void onResume() {
@@ -71,16 +61,15 @@ public class MainActivity extends AppCompatActivity {
         IntentFilter intentFilter = new IntentFilter(PostPullService.ACTION_BROADCAST);
         LocalBroadcastManager.getInstance(this).registerReceiver(mStatusReceiver, intentFilter);
 
-        // This will help us prevent unnecessary network calls when going back in the stack
+        // To save on network calls, do not reload ViewPager when coming back to this Activity
         if (mIsNewActivity) {
-            PostsPagerAdapter viewPagerAdapter = new PostsPagerAdapter(getSupportFragmentManager());
-            mPager.setAdapter(viewPagerAdapter);
-            mPager.setOffscreenPageLimit(2);
-            mTabLayout.setupWithViewPager(mPager);
+            setupViewPager();
             mIsNewActivity = false;
         }
-    }
 
+        // Highlight selected tab on first activity launch, and on configuration changes
+        mPagerAdapter.highlightTab(this, mTabLayout.getTabAt(mPager.getCurrentItem()));
+    }
 
     @Override
     protected void onPause() {
@@ -89,30 +78,30 @@ public class MainActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mStatusReceiver);
     }
 
-    /* Switch between different post categories (see PAGES[]) */
-    public static class PostsPagerAdapter extends FragmentPagerAdapter {
+    /* Configure and intialize the ViewPager */
+    private void setupViewPager() {
+        mPagerAdapter = new PostPagerAdapter(getSupportFragmentManager());
+        mPager.setAdapter(mPagerAdapter);
+        mPager.setOffscreenPageLimit(2);
+        mTabLayout.setupWithViewPager(mPager);
 
-        public PostsPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
+        // Inflate custom tabs, and setup a tab listener to (un)highlight them
+        mPagerAdapter.setupCustomTabs(this, mTabLayout);
+        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                mPagerAdapter.highlightTab(MainActivity.this, tab);
+            }
 
-        // Number of pages
-        @Override
-        public int getCount() {
-            return PAGES.length;
-        }
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                mPagerAdapter.unHighlightTab(MainActivity.this, tab);
+            }
 
-        // Page to display
-        @Override
-        public Fragment getItem(int position) {
-            return ViewPagerFragment.newInstance(PAGES[position]);
-        }
-
-        // Return page title
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return PAGES[position];
-        }
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
     }
 
     @Override
@@ -125,9 +114,15 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_refresh:
+                View refreshView = findViewById(R.id.action_refresh);
+                Animation rotate = AnimationUtils.loadAnimation(this,
+                        R.anim.rotate_clockwise);
+                refreshView.startAnimation(rotate);
+
                 ViewPagerFragment pagerFragment = (ViewPagerFragment) mPager.getAdapter()
                         .instantiateItem(mPager, mPager.getCurrentItem());
                 pagerFragment.refreshPage();
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -145,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
             String action = intent.getAction();
             String extra = intent.getStringExtra(PostPullService.EXTRA_BROADCAST);
             String status = intent.getStringExtra(PostPullService.EXTRA_STATUS);
-            int page = Arrays.asList(MainActivity.PAGES).indexOf(extra);
+            int page = Arrays.asList(PAGES).indexOf(extra);
 
             if (action != null && action.equals(PostPullService.ACTION_BROADCAST) && page != -1) {
                 ViewPagerFragment pagerFragment = (ViewPagerFragment) mPager.getAdapter()

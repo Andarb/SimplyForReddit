@@ -2,4 +2,5 @@
 <resources>
     <dimen name="cardview_margin">16dp</dimen>
     <dimen name="widget_margin">16dp</dimen>
+    <dimen name="tablayout_height">34dp</dimen>
 </resources>

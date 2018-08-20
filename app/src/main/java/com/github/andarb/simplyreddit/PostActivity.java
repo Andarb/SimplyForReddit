@@ -24,6 +24,8 @@ import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -346,10 +348,20 @@ public class PostActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_refresh:
+                View refreshView = findViewById(R.id.action_refresh);
+                Animation rotate = AnimationUtils.loadAnimation(this,
+                        R.anim.rotate_clockwise);
+                refreshView.startAnimation(rotate);
+
                 refreshpost();
 
                 return true;
             case R.id.action_share:
+                View shareView = findViewById(R.id.action_share);
+                Animation grow = AnimationUtils.loadAnimation(this,
+                        R.anim.grow);
+                shareView.startAnimation(grow);
+
                 startActivity(Intent.createChooser(mShareIntent, getString(R.string.action_share)));
 
                 return true;
