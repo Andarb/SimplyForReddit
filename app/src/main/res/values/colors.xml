@@ -5,7 +5,6 @@
     <color name="colorAccent">#448AFF</color>
 
     <color name="colorImageTint">#5F000000</color>
-    <color name="colorInactiveTabTint">#FFFFFF</color>
 
     <color name="colorTextPrimary">#212121</color>
     <color name="colorTextSecondary">#757575</color>

@@ -21,7 +21,7 @@ import com.github.andarb.simplyreddit.SubredditActivity;
  * List view items can be clicked to open post details within the app.
  */
 public class PostWidgetProvider extends AppWidgetProvider {
-    public static final String ACTION_POST = "com.github.andarb.simplyreddit.widget.ACTION_POST";
+    private static final String ACTION_POST = "com.github.andarb.simplyreddit.widget.ACTION_POST";
     private static final String ACTION_REFRESH =
             "com.github.andarb.simplyreddit.widget.ACTION_REFRESH";
     public static final String EXTRA_WIDGET_POST =

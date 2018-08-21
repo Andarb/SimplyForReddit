@@ -23,6 +23,8 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/tablayout_height"
             android:layout_gravity="top"
+            app:tabGravity="fill"
+            app:tabMode="fixed"
             app:tabPaddingEnd="0dp"
             app:tabPaddingStart="0dp" />
     </android.support.v4.view.ViewPager>

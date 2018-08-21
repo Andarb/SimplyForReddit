@@ -30,6 +30,7 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/widget_margin"
+            android:contentDescription="@string/a11y_refresh_widget"
             android:src="@drawable/refresh_icon_24" />
 
     </RelativeLayout>

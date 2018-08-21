@@ -42,7 +42,6 @@ public class ViewPagerFragment extends Fragment {
     private Context mContext;
     private String mPage;
     private PostAdapter mAdapter;
-    private AppDatabase mDb;
     private Unbinder mButterknifeUnbinder;
     private boolean mIsLoading;
 
@@ -84,12 +83,12 @@ public class ViewPagerFragment extends Fragment {
             mPage = getArguments().getString(ARG_PAGE);
         }
         mContext = getActivity();
-        mDb = AppDatabase.getDatabase(mContext.getApplicationContext());
+        AppDatabase db = AppDatabase.getDatabase(mContext.getApplicationContext());
 
         setupRvAdapter();
 
         // Setup viewmodel for adapter data
-        PostsViewModelFactory factory = new PostsViewModelFactory(mDb, mPage);
+        PostsViewModelFactory factory = new PostsViewModelFactory(db, mPage);
         PostsViewModel viewModel = ViewModelProviders.of(this, factory)
                 .get(PostsViewModel.class);
         viewModel.getPosts().observe(this, new Observer<List<Post>>() {

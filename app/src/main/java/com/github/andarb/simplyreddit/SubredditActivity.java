@@ -52,7 +52,6 @@ public class SubredditActivity extends AppCompatActivity {
     ProgressBar mProgressBar;
 
     private String mSubreddit;
-    private AppDatabase mDb;
     private PostAdapter mAdapter;
     private StatusReceiver mStatusReceiver;
     private boolean mIsNewActivity;
@@ -64,7 +63,7 @@ public class SubredditActivity extends AppCompatActivity {
         setContentView(R.layout.activity_subreddit);
         ButterKnife.bind(this);
 
-        mDb = AppDatabase.getDatabase(getApplicationContext());
+        AppDatabase db = AppDatabase.getDatabase(getApplicationContext());
 
         // Retrieve subreddit name to be loaded
         mSubreddit = getIntent().getStringExtra(EXTRA_SUBREDDIT);
@@ -84,7 +83,7 @@ public class SubredditActivity extends AppCompatActivity {
         setupRvAdapter();
 
         // Setup viewmodel for adapter data
-        PostsViewModelFactory factory = new PostsViewModelFactory(mDb, mSubreddit);
+        PostsViewModelFactory factory = new PostsViewModelFactory(db, mSubreddit);
         PostsViewModel viewModel = ViewModelProviders.of(this, factory)
                 .get(PostsViewModel.class);
         viewModel.getPosts().observe(this, new Observer<List<Post>>() {
