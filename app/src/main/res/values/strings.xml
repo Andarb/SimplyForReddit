@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Simply Reddit</string>
+    <string name="app_name">Simply For Reddit</string>
 
     <!-- Toast that appears when the refresh icon in the widget is clicked -->
     <string name="refresh_toast">Refreshing list</string>
