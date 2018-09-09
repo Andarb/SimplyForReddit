@@ -44,6 +44,7 @@
     <string name="a11y_score_icon">Post score icon</string>
     <string name="a11y_refresh_widget">Refresh widget list</string>
     <string name="a11y_arrow_up">Score icon</string>
+    <string name="a11y_logo">App logo</string>
 
     <!-- Tools text used for development purposes only -->
     <string name="tools_title">Ice cave in Iceland during sunset</string>
