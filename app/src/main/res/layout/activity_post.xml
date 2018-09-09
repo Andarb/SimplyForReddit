@@ -33,7 +33,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/colorPostHeaderBg"
-                    android:padding="8dp">
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:paddingEnd="@dimen/cardview_margin"
+                    android:paddingStart="@dimen/cardview_margin">
 
                     <TextView
                         android:id="@+id/post_author_tv"

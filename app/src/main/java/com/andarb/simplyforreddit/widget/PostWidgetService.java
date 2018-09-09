@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -47,7 +46,6 @@ class PostRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         try {
             response = call.execute();
         } catch (IOException e) {
-            Log.w(TAG, "No internet connection");
             return;
         }
 
@@ -55,14 +53,10 @@ class PostRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             final com.andarb.simplyforreddit.data.RedditPosts redditPosts = response.body();
 
             if (redditPosts == null) {
-                Log.w(TAG, "Failed deserializing JSON");
                 return;
             }
 
             mPosts = redditPosts.getPosts();
-
-        } else {
-            Log.w(TAG, "Response not successful:" + response.code());
         }
     }
 
