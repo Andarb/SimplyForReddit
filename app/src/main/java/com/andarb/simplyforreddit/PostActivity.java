@@ -355,6 +355,14 @@ public class PostActivity extends AppCompatActivity {
                 startActivity(Intent.createChooser(mShareIntent, getString(R.string.action_share)));
 
                 return true;
+            case R.id.action_policy:
+                Uri policyUri = Uri.parse(getString(R.string.policy_url));
+                Intent intent = new Intent(Intent.ACTION_VIEW, policyUri);
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(intent);
+                }
+
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

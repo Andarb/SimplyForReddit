@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -186,6 +187,14 @@ public class SubredditActivity extends AppCompatActivity {
                 refreshView.startAnimation(rotate);
 
                 refreshList();
+
+                return true;
+            case R.id.action_policy:
+                Uri policyUri = Uri.parse(getString(R.string.policy_url));
+                Intent intent = new Intent(Intent.ACTION_VIEW, policyUri);
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(intent);
+                }
 
                 return true;
             default:

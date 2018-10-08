@@ -7,5 +7,9 @@
         android:icon="@drawable/refresh_icon_24"
         android:title="@string/action_refresh"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/action_policy"
+        android:title="@string/action_policy"
+        app:showAsAction="never" />
 
 </menu>

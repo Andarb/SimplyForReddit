@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.LocalBroadcastManager;
@@ -122,6 +123,14 @@ public class MainActivity extends AppCompatActivity {
                 ViewPagerFragment pagerFragment = (ViewPagerFragment) mPager.getAdapter()
                         .instantiateItem(mPager, mPager.getCurrentItem());
                 pagerFragment.refreshPage();
+
+                return true;
+            case R.id.action_policy:
+                Uri policyUri = Uri.parse(getString(R.string.policy_url));
+                Intent intent = new Intent(Intent.ACTION_VIEW, policyUri);
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(intent);
+                }
 
                 return true;
             default:
